@@ -6,7 +6,7 @@ import { Box, ColorPicker, Popover, TextInput, Tooltip } from "@mantine/core";
 function Landing() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
-  const [pickerInteracted, setPickerInteracted] = useState(false);
+  const [isTooltipVisible, setisTooltipVisible] = useState(true);
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -24,15 +24,20 @@ function Landing() {
         <main id="mainJoin">
           <form onSubmit={formSubmitHandler}>
             <div>
-              <Popover trapFocus position="left">
-                <Tooltip label="Click me!" withArrow opened={!pickerInteracted}>
+              <Popover
+                onOpen={() => {
+                  console.log("click!");
+                  setisTooltipVisible(false);
+                }}
+                position="left"
+                trapFocus
+                withArrow
+              >
+                <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
                   <Popover.Target>
                     <div
                       className="user-color-picker"
-                      style={{ backgroundColor: colorValue }}
-                      onClick={() => {
-                        setPickerInteracted(true);
-                      }}
+                      style={{ backgroundColor: colorValue, cursor: "pointer" }}
                     ></div>
                   </Popover.Target>
                 </Tooltip>
