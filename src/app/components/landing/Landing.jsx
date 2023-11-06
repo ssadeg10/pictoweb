@@ -5,6 +5,7 @@ import { Box, ColorPicker, Popover, TextInput } from "@mantine/core";
 
 function Landing() {
   const [username, setUsername] = useState("");
+  const [colorValue, setColorValue] = useState("#fff");
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -24,10 +25,16 @@ function Landing() {
             <div>
               <Popover trapFocus position="left">
                 <Popover.Target>
-                  <div className="user-color-picker"></div>
+                  <div
+                    className="user-color-picker"
+                    style={{ backgroundColor: colorValue }}
+                  ></div>
                 </Popover.Target>
                 <Popover.Dropdown>
-                  <ColorSelect />
+                  <ColorSelect
+                    colorValue={colorValue}
+                    setColorValue={setColorValue}
+                  />
                 </Popover.Dropdown>
               </Popover>
               <div className="formGroup username">
@@ -56,7 +63,7 @@ function Landing() {
 
 export default Landing;
 
-function ColorSelect() {
+function ColorSelect({ colorValue, setColorValue }) {
   const userColors = [
     ["#B8B8F0", "#121592"], //ppl
     ["#FEA1A1", "#AF2121"], //red
@@ -69,11 +76,16 @@ function ColorSelect() {
     <Box maw={200} mx="auto">
       <p>Select a user color:</p>
       <ColorPicker
+        format="hex"
+        value={colorValue}
         classNames={{ swatches: "swatches", swatch: "swatch" }}
         withPicker={false}
         swatches={userColors.map((array) => {
           return array[1];
         })}
+        onChange={(color) => {
+          setColorValue(color);
+        }}
       />
     </Box>
   );
