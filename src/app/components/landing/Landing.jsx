@@ -26,7 +26,6 @@ function Landing() {
             <div>
               <Popover
                 onOpen={() => {
-                  console.log("click!");
                   setisTooltipVisible(false);
                 }}
                 position="left"
