@@ -1,11 +1,12 @@
 import { useState } from "react";
 import logo from "/assets/picto.svg";
 import "./Landing.css";
-import { Box, ColorPicker, Popover, TextInput } from "@mantine/core";
+import { Box, ColorPicker, Popover, TextInput, Tooltip } from "@mantine/core";
 
 function Landing() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
+  const [pickerInteracted, setPickerInteracted] = useState(false);
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -24,12 +25,17 @@ function Landing() {
           <form onSubmit={formSubmitHandler}>
             <div>
               <Popover trapFocus position="left">
-                <Popover.Target>
-                  <div
-                    className="user-color-picker"
-                    style={{ backgroundColor: colorValue }}
-                  ></div>
-                </Popover.Target>
+                <Tooltip label="Click me!" withArrow opened={!pickerInteracted}>
+                  <Popover.Target>
+                    <div
+                      className="user-color-picker"
+                      style={{ backgroundColor: colorValue }}
+                      onClick={() => {
+                        setPickerInteracted(true);
+                      }}
+                    ></div>
+                  </Popover.Target>
+                </Tooltip>
                 <Popover.Dropdown>
                   <ColorSelect
                     colorValue={colorValue}
