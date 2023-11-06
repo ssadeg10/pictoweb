@@ -1,5 +1,5 @@
 import { useState } from "react";
-import logo from "../../../assets/picto.svg";
+import logo from "/assets/picto.svg";
 import "./Landing.css";
 import { Box, ColorPicker, Popover, TextInput } from "@mantine/core";
 
