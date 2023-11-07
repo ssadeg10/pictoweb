@@ -110,6 +110,8 @@ function Landing() {
             </Group>
           </form>
         </main>
+        <br />
+        <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
       </div>
     </>
   );
