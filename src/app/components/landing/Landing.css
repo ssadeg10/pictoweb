@@ -1,8 +1,24 @@
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
 #logo {
   width: 100%;
   height: 8rem;
   /* filter: invert(100%); */
+  animation: logo 1 1s linear alternate;
 }
+
+.mantine-ActionIcon-root {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+}
+
 .user-color-picker {
   width: 34px;
   height: 34px;
@@ -32,7 +48,6 @@
 } */
 
 .swatch {
-  width: 1em;
   height: 1.8em;
 }
 
@@ -46,23 +61,16 @@
   text-align: justify;
 }
 
-/* Transitions */
-.picker-enter {
-  transform: translateY(-20px);
-  opacity: 0;
+.mantine-Paper-root {
+  width: 10em;
+  height: 12em;
 }
-.picker-enter-active {
-  transform: translateY(0);
-  opacity: 1;
-  transition: opacity 300ms, transform 300ms;
+
+@keyframes logo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-.picker-exit {
-  transform: translateY(0);
-  opacity: 1;
-}
-.picker-exit-active {
-  transform: translateY(-20px);
-  opacity: 0;
-  transition: opacity 300ms, transform 300ms;
-}
-/* End Transitions */

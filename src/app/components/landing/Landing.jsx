@@ -1,12 +1,29 @@
 import { useState } from "react";
 import logo from "/assets/picto.svg";
 import "./Landing.css";
-import { Box, ColorPicker, Popover, TextInput, Tooltip } from "@mantine/core";
+import {
+  Box,
+  ColorPicker,
+  Popover,
+  TextInput,
+  Tooltip,
+  Paper,
+  Text,
+  Group,
+  ActionIcon,
+  useMantineColorScheme,
+  useComputedColorScheme,
+} from "@mantine/core";
 
 function Landing() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
   const [isTooltipVisible, setisTooltipVisible] = useState(true);
+
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: true,
+  });
 
   const formSubmitHandler = (e) => {
     e.preventDefault();
@@ -15,6 +32,14 @@ function Landing() {
 
   return (
     <>
+      <ActionIcon
+        onClick={() =>
+          setColorScheme(computedColorScheme === "light" ? "dark" : "light")
+        }
+        variant="default"
+        size="xl"
+        aria-label="Toggle color scheme"
+      ></ActionIcon>
       <div id="containerMain">
         <div>
           <img id="logo" src={logo} />
@@ -63,7 +88,26 @@ function Landing() {
               </div>
             </div>
             <br />
-            <button type="submit">Join</button>
+            <Group justify="center">
+              <Paper
+                component="button"
+                radius={0}
+                shadow="md"
+                className="createRoom"
+                withBorder
+              >
+                <Text>Create a room</Text>
+              </Paper>
+              <Paper
+                component="button"
+                radius={0}
+                shadow="md"
+                className="joinRoom"
+                withBorder
+              >
+                <Text>Join a room</Text>
+              </Paper>
+            </Group>
           </form>
         </main>
       </div>
