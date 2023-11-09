@@ -6,18 +6,9 @@ import {
   Group,
 } from "@mantine/core";
 import "./Chatroom.css";
-import { useEffect } from "react";
+import CanvasShell from "../canvas-shell/CanvasShell";
 
 function Chatroom() {
-  useEffect(() => {
-    let messagesPanel = document.querySelector(".messagesPanel");
-    let canvasPanel = document.querySelector(".canvasPanel");
-    messagesPanel.setAttribute(
-      "height",
-      visualViewport.height - canvasPanel.getAttribute("height")
-    );
-  }, []);
-
   return (
     <>
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
@@ -76,25 +67,8 @@ function Chatroom() {
                   title="Small Tip"
                 ></button>
               </div>
-              <div id="containerCanvas">
-                <p className="h6 disableSelect" id="name">
-                  username
-                </p>
-                {/* <svg
-                  width="0"
-                  height="0"
-                  style="position:absolute;z-index:-1;"
-                ></svg> */}
-                <div id="containerDraw">
-                  <canvas className="canvas" id="drawLayer">
-                    Your browser does not support HTML5 Canvas
-                  </canvas>
-                </div>
-                <div id="containerText">
-                  <canvas className="canvas" id="textLayer">
-                    Your browser does not support HTML5 Canvas
-                  </canvas>
-                </div>
+              <div>
+                <CanvasShell username="Bob" />
               </div>
               <div id="containerMssgPanel">
                 <button

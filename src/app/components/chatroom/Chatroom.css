@@ -19,9 +19,9 @@ body {
 #containerUserElements {
   display: flex;
 }
-.canvas {
-  /* width: 800px;
-  height: 300px; */
+/* .canvas {
+  width: 450px;
+  height: 180px;
   margin: auto;
   background-color: #ffffff;
   border: 2px solid rgb(85, 85, 85);
@@ -47,11 +47,10 @@ body {
   border: 2px solid;
   border-top-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  /* background-color: white; */
-  /* color: rgb(85, 85, 85); */
   position: absolute;
   z-index: 3;
-}
+} 
+*/
 
 /* Contains #containerUserElements */
 /* #containerUserElTop{
@@ -71,9 +70,9 @@ body {
   /* border-radius: 8px; */
   /* box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); */
 }
-#containerCanvas {
+/* #containerCanvas {
   position: relative;
-}
+} */
 #containerSizes,
 #containerMssgPanel {
   /* flex-direction: row; */
