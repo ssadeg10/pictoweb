@@ -1,14 +1,17 @@
+import { forwardRef } from "react";
 import "./CanvasShell.css";
 
-function CanvasShell(props) {
-  const { username } = props;
+const CanvasShell = forwardRef(function CanvasShell(props, ref) {
+  const username = props.username;
+  // recieve ref hook from parent component
+
   return (
     <div id="containerCanvas">
       <p className="h6 disableSelect" id="name">
-        {username}
+        {username ? username : "none"}
       </p>
       <div id="containerDraw">
-        <canvas className="canvas" id="drawLayer">
+        <canvas ref={ref} className="canvas" id="drawLayer">
           Your browser does not support HTML5 Canvas
         </canvas>
       </div>
@@ -19,6 +22,6 @@ function CanvasShell(props) {
       </div>
     </div>
   );
-}
+});
 
 export default CanvasShell;

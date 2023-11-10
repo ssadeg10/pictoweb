@@ -6,7 +6,7 @@ import {
   Group,
 } from "@mantine/core";
 import "./Chatroom.css";
-import CanvasShell from "../canvas-shell/CanvasShell";
+import DrawCanvas from "../draw-canvas/DrawCanvas";
 
 function Chatroom() {
   return (
@@ -68,7 +68,7 @@ function Chatroom() {
                 ></button>
               </div>
               <div>
-                <CanvasShell username="Bob" />
+                <DrawCanvas username="Bob" />
               </div>
               <div id="containerMssgPanel">
                 <button
