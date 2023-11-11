@@ -137,7 +137,7 @@ function ColorSelect({ colorValue, setColorValue }) {
         classNames={{ swatches: "swatches", swatch: "swatch" }}
         withPicker={false}
         swatches={userColors.map((array) => {
-          return array[1];
+          return array[0];
         })}
         onChange={(color) => {
           setColorValue(color);

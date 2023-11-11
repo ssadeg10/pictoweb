@@ -27,8 +27,8 @@ function DrawCanvas(props) {
     }
 
     function resize() {
-      var w = canvas.getBoundingClientRect().width - canvas.offsetWidth;
-      var h = canvas.getBoundingClientRect().height - canvas.offsetHeight;
+      let w = canvas.getBoundingClientRect().width - canvas.offsetWidth;
+      let h = canvas.getBoundingClientRect().height - canvas.offsetHeight;
       canvas.width = canvas.getBoundingClientRect().width - w;
       canvas.height = canvas.getBoundingClientRect().height - h;
     }
@@ -45,9 +45,9 @@ function DrawCanvas(props) {
       context.lineJoin = "round";
       context.strokeStyle = drawVars.color;
 
-      context.moveTo(drawVars.pos.x, drawVars.pos.y); // from
+      context.moveTo(drawVars.pos.x, drawVars.pos.y);
       setPosition(e);
-      context.lineTo(drawVars.pos.x, drawVars.pos.y); // to
+      context.lineTo(drawVars.pos.x, drawVars.pos.y);
 
       context.stroke();
     }
@@ -67,15 +67,21 @@ function DrawCanvas(props) {
 
     function setPosition(e) {
       const rect = canvas.getBoundingClientRect();
-      drawVars.pos.x = e.clientX - rect.left;
-      drawVars.pos.y = e.clientY - rect.top;
+      drawVars.pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition, false);
     canvas.addEventListener("mousemove", drawNew, false);
     canvas.addEventListener("mouseenter", setPosition, false);
-    canvas.addEventListener("click", dot, false);
+    canvas.addEventListener("click", {}, false);
+
+    return function cleanupEventListeners() {
+      canvas.removeEventListener("mousedown", setPosition, false);
+      canvas.removeEventListener("mousemove", drawNew, false);
+      canvas.removeEventListener("mouseenter", setPosition, false);
+      canvas.removeEventListener("click", {}, false);
+    };
   });
 
   return <CanvasShell username={props.username} ref={childCanvasRef} />;

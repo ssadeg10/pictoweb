@@ -5,6 +5,7 @@
   background-color: #ffffff;
   border: 2px solid black;
   border-radius: 8px;
+  image-rendering: pixelated;
 }
 #containerCanvas {
   position: relative;
