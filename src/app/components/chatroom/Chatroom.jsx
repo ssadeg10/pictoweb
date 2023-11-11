@@ -7,8 +7,11 @@ import {
 } from "@mantine/core";
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
+import User from "../../models/User.js";
 
 function Chatroom() {
+  const user = new User("John Smith", "blue");
+
   return (
     <>
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
@@ -68,7 +71,7 @@ function Chatroom() {
                 ></button>
               </div>
               <div>
-                <DrawCanvas username="Bob" />
+                <DrawCanvas username={user.username} />
               </div>
               <div id="containerMssgPanel">
                 <button

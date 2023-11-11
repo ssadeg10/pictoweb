@@ -52,18 +52,18 @@ function DrawCanvas(props) {
       context.stroke();
     }
 
-    function dot() {
-      context.beginPath();
-      context.fillStyle = drawVars.color;
-      context.arc(
-        drawVars.pos.x,
-        drawVars.pos.y,
-        drawVars.width / 2,
-        0,
-        2 * Math.PI
-      );
-      context.fill();
-    }
+    // function dot() {
+    //   context.beginPath();
+    //   context.fillStyle = drawVars.color;
+    //   context.arc(
+    //     drawVars.pos.x,
+    //     drawVars.pos.y,
+    //     drawVars.width / 2,
+    //     0,
+    //     2 * Math.PI
+    //   );
+    //   context.fill();
+    // }
 
     function setPosition(e) {
       const rect = canvas.getBoundingClientRect();
