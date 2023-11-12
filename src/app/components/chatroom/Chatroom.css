@@ -66,16 +66,12 @@ body {
   width: 100%;
   position: relative;
   bottom: 0;
-  /* background-color: #cdcdcd; */
-  /* border-radius: 8px; */
-  /* box-shadow: 0 0 8px rgba(0, 0, 0, 0.3); */
 }
 /* #containerCanvas {
   position: relative;
 } */
 #containerSizes,
 #containerMssgPanel {
-  /* flex-direction: row; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -86,13 +82,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* padding: 2%; */
 }
 .btn.toolbarButton,
 .btn.mssgButton {
   margin: 3px;
   padding: 5px;
-  width: 100%;
   border: 1px solid black;
   padding: 20px;
   float: left;

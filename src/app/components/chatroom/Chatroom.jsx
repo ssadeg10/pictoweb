@@ -8,9 +8,33 @@ import {
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
+import { useRef } from "react";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
+
+  // Store the clear() function
+  const clearRef = useRef(null);
+
+  const handleButtonCanvasDraw = (drawCanvas) => {
+    drawCanvas();
+  };
+
+  const handleButtonCanvasErase = (eraseCanvas) => {
+    eraseCanvas();
+  };
+
+  const handleButtonCanvasClear = () => {
+    if (typeof clearRef.current === "function") {
+      clearRef.current();
+    } else {
+      console.error("Clear function is not defined");
+    }
+  };
+
+  const handleButtonLineWidth = (lineWidth) => {
+    lineWidth();
+  };
 
   return (
     <>
@@ -71,7 +95,11 @@ function Chatroom() {
                 ></button>
               </div>
               <div>
-                <DrawCanvas username={user.username} />
+                <DrawCanvas
+                  username={user.username}
+                  onClickCanvasClear={handleButtonCanvasClear}
+                  onSetClearRef={(clear) => (clearRef.current = clear)} // set hook to child function
+                />
               </div>
               <div id="containerMssgPanel">
                 <button
@@ -99,6 +127,7 @@ function Chatroom() {
                   data-placement="right"
                   data-trigger="hover"
                   title="Clear"
+                  onClick={handleButtonCanvasClear}
                 ></button>
               </div>
             </div>

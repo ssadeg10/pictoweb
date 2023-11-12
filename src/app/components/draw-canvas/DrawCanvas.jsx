@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import CanvasShell from "../canvas-shell/CanvasShell";
 
 function DrawCanvas(props) {
-  const childCanvasRef = useRef(null);
+  const canvasShellRef = useRef(null);
   const drawVars = {
     paint: false,
     width: 5,
@@ -14,13 +14,12 @@ function DrawCanvas(props) {
   };
 
   useEffect(() => {
-    const canvas = childCanvasRef.current;
+    const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
 
     if (context) {
       resize();
       context.imageSmoothingEnabled = false;
-      console.log(context);
       context.filter = "url(#remove-alpha)";
     } else {
       console.error("Cannot load canvas context");
@@ -70,20 +69,45 @@ function DrawCanvas(props) {
       drawVars.pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
+    function lineWidth(width) {
+      if (width > 1 && width < 15) {
+        drawVars.width = width;
+      }
+    }
+    function clear() {
+      console.log("clear function in child component");
+      context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function erase(toggle) {
+      if (toggle) {
+        context.globalCompositeOperation = "destination-out";
+        drawVars.color = "#ffffff";
+      } else {
+        context.globalCompositeOperation = "source-over";
+        drawVars.color = "#000000";
+      }
+    }
+
+    // Passes the child function to the parent which assigns to a hook
+    props.onSetClearRef(clear);
+
+    // TODO fix the error output from these event listeners
     // Canvas desktop mouse event listeners
-    canvas.addEventListener("mousedown", setPosition, false);
-    canvas.addEventListener("mousemove", drawNew, false);
-    canvas.addEventListener("mouseenter", setPosition, false);
-    canvas.addEventListener("click", {}, false);
+    canvas.addEventListener("mousedown", setPosition);
+    canvas.addEventListener("mousemove", drawNew);
+    canvas.addEventListener("mouseenter", setPosition);
+    // canvas.addEventListener("click", {}, false);
 
-    return function cleanupEventListeners() {
-      canvas.removeEventListener("mousedown", setPosition, false);
-      canvas.removeEventListener("mousemove", drawNew, false);
-      canvas.removeEventListener("mouseenter", setPosition, false);
-      canvas.removeEventListener("click", {}, false);
+    return () => {
+      // Cleanup on unmount
+      canvas.removeEventListener("mousedown", setPosition);
+      canvas.removeEventListener("mousemove", drawNew);
+      canvas.removeEventListener("mouseenter", setPosition);
+      // canvas.removeEventListener("click", {}, false);
     };
-  });
+  }, [canvasShellRef, drawVars, props]);
 
-  return <CanvasShell username={props.username} ref={childCanvasRef} />;
+  return <CanvasShell username={props.username} ref={canvasShellRef} />;
 }
 export default DrawCanvas;
