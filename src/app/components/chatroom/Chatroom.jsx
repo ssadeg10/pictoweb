@@ -13,18 +13,24 @@ import { useRef } from "react";
 function Chatroom() {
   const user = new User("John Smith", "blue");
 
-  // Store the clear() function
+  // Hooks to store child functions
   const clearRef = useRef(null);
+  const drawEraseRef = useRef(null);
 
-  const handleButtonCanvasDraw = (drawCanvas) => {
-    drawCanvas();
+  // onClick handlers
+  const handleButtonDrawErase = (eraseEnable) => {
+    if (typeof drawEraseRef.current === "function") {
+      drawEraseRef.current(eraseEnable);
+    } else {
+      console.error(
+        `${
+          eraseEnable ? "Erase" : "Draw"
+        } button event: Erase function is not defined`
+      );
+    }
   };
 
-  const handleButtonCanvasErase = (eraseCanvas) => {
-    eraseCanvas();
-  };
-
-  const handleButtonCanvasClear = () => {
+  const handleButtonClear = () => {
     if (typeof clearRef.current === "function") {
       clearRef.current();
     } else {
@@ -58,6 +64,7 @@ function Chatroom() {
                   data-placement="left"
                   data-trigger="hover"
                   title="Draw"
+                  onClick={() => handleButtonDrawErase(false)}
                 ></button>
                 <button
                   className="btn toolbarButton toolFunction disableSelect"
@@ -66,6 +73,7 @@ function Chatroom() {
                   data-placement="left"
                   data-trigger="hover"
                   title="Erase"
+                  onClick={() => handleButtonDrawErase(true)}
                 ></button>
               </div>
               <div id="containerSizes">
@@ -97,8 +105,13 @@ function Chatroom() {
               <div>
                 <DrawCanvas
                   username={user.username}
-                  onClickCanvasClear={handleButtonCanvasClear}
-                  onSetClearRef={(clear) => (clearRef.current = clear)} // set hook to child function
+                  onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)} // set hook to child function
+                  onSetDrawRef={(eraseFunc) =>
+                    (drawEraseRef.current = eraseFunc)
+                  }
+                  onSetEraseRef={(eraseFunc) =>
+                    (drawEraseRef.current = eraseFunc)
+                  }
                 />
               </div>
               <div id="containerMssgPanel">
@@ -127,7 +140,7 @@ function Chatroom() {
                   data-placement="right"
                   data-trigger="hover"
                   title="Clear"
-                  onClick={handleButtonCanvasClear}
+                  onClick={handleButtonClear}
                 ></button>
               </div>
             </div>

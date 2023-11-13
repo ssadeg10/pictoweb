@@ -78,8 +78,8 @@ function DrawCanvas(props) {
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function erase(toggle) {
-      if (toggle) {
+    function erase(enable) {
+      if (enable) {
         context.globalCompositeOperation = "destination-out";
         drawVars.color = "#ffffff";
       } else {
@@ -90,6 +90,8 @@ function DrawCanvas(props) {
 
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(clear);
+    props.onSetDrawRef(erase);
+    props.onSetEraseRef(erase);
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);
