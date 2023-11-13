@@ -13,6 +13,7 @@ import {
   ActionIcon,
   useMantineColorScheme,
   useComputedColorScheme,
+  SegmentedControl,
 } from "@mantine/core";
 
 function Landing() {
@@ -112,6 +113,20 @@ function Landing() {
         </main>
         <br />
         <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
+        <SegmentedControl
+          className="drawErase"
+          orientation="vertical"
+          data={[
+            {
+              label: "draw",
+              value: false,
+            },
+            {
+              label: "erase",
+              value: true,
+            },
+          ]}
+        />
       </div>
     </>
   );

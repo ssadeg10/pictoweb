@@ -15,10 +15,10 @@ body {
 }
 
 /* Old CSS */
-.line,
+/* .line,
 #containerUserElements {
   display: flex;
-}
+} */
 /* .canvas {
   width: 450px;
   height: 180px;
@@ -77,7 +77,7 @@ body {
   align-items: center;
   padding: 2%;
 }
-#containerTools,
+/* #containerTools, */
 #containerClear {
   display: flex;
   flex-direction: column;
@@ -99,7 +99,7 @@ body {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
 }
-#draw {
+/* #draw {
   background: url("/assets/pencil.svg");
   background-repeat: no-repeat;
   background-size: 35px auto;
@@ -110,7 +110,7 @@ body {
   background-repeat: no-repeat;
   background-size: 35px auto;
   background-position: center;
-}
+} */
 #lg,
 #md,
 #sm {
@@ -142,4 +142,16 @@ body {
   background-repeat: no-repeat;
   background-size: 35px auto;
   background-position: center;
+}
+
+.mantine-SegmentedControl-root .drawErase {
+  --sc-radius: var(--mantine-radius-sm);
+  --sc-shadow: var(--mantine-shadow-xs);
+  --sc-padding: var(--sc-padding-sm);
+  --sc-font-size: var(--mantine-font-size-sm);
+  --sc-color: var(--mantine-color-dark-6);
+}
+.mantine-SegmentedControl-indicator .drawErase {
+  visibility: visible;
+  background-color: var(--mantine-color-dark-6);
 }

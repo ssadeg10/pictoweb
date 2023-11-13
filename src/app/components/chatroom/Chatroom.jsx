@@ -3,7 +3,10 @@ import {
   AppShellFooter,
   AppShellHeader,
   AppShellMain,
+  Box,
+  Center,
   Group,
+  SegmentedControl,
 } from "@mantine/core";
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
@@ -20,12 +23,14 @@ function Chatroom() {
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
+    var eraseEnableBool = String(eraseEnable).toLowerCase() === "true";
+
     if (typeof drawEraseRef.current === "function") {
-      drawEraseRef.current(eraseEnable);
+      drawEraseRef.current(eraseEnableBool);
     } else {
       console.error(
         `${
-          eraseEnable ? "Erase" : "Draw"
+          eraseEnableBool ? "Erase" : "Draw"
         } button event: Erase function is not defined`
       );
     }
@@ -62,7 +67,7 @@ function Chatroom() {
           <div className="canvasPanel">
             <div id="containerUserElements">
               <div id="containerTools">
-                <button
+                {/* <button
                   className="btn toolbarButton toolFunction disableSelect"
                   id="draw"
                   data-toggle="tooltip"
@@ -79,7 +84,42 @@ function Chatroom() {
                   data-trigger="hover"
                   title="Erase"
                   onClick={() => handleButtonDrawErase(true)}
-                ></button>
+                ></button> */}
+                <SegmentedControl
+                  className="drawErase"
+                  orientation="vertical"
+                  onChange={(newValue) => {
+                    handleButtonDrawErase(newValue);
+                  }}
+                  data={[
+                    {
+                      value: "false",
+                      label: (
+                        <Center>
+                          <img
+                            src="/assets/pencil.svg"
+                            alt="pencil icon"
+                            width={25}
+                          />
+                          <Box ml={10}>Draw</Box>
+                        </Center>
+                      ),
+                    },
+                    {
+                      value: "true",
+                      label: (
+                        <Center>
+                          <img
+                            src="/assets/eraser.svg"
+                            alt="pencil icon"
+                            width={25}
+                          />
+                          <Box ml={10}>Erase</Box>
+                        </Center>
+                      ),
+                    },
+                  ]}
+                />
               </div>
               <div id="containerSizes">
                 <button
