@@ -17,6 +17,8 @@ function DrawCanvas(props) {
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
 
+    canvas.style.cursor = "crosshair";
+
     if (context) {
       resize();
       context.imageSmoothingEnabled = false;
