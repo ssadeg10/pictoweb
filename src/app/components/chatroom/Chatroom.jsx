@@ -16,6 +16,7 @@ function Chatroom() {
   // Hooks to store child functions
   const clearRef = useRef(null);
   const drawEraseRef = useRef(null);
+  const lineWidthRef = useRef(null);
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
@@ -38,8 +39,12 @@ function Chatroom() {
     }
   };
 
-  const handleButtonLineWidth = (lineWidth) => {
-    lineWidth();
+  const handleButtonLineWidth = (width) => {
+    if (typeof lineWidthRef.current === "function") {
+      lineWidthRef.current(width);
+    } else {
+      console.error("Line width function is not defined");
+    }
   };
 
   return (
@@ -84,6 +89,7 @@ function Chatroom() {
                   data-placement="left"
                   data-trigger="hover"
                   title="Large Tip"
+                  onClick={() => handleButtonLineWidth(12)}
                 ></button>
                 <button
                   className="btn toolbarButton lineWidth disableSelect"
@@ -92,6 +98,7 @@ function Chatroom() {
                   data-placement="left"
                   data-trigger="hover"
                   title="Medium Tip"
+                  onClick={() => handleButtonLineWidth(5)}
                 ></button>
                 <button
                   className="btn toolbarButton lineWidth disableSelect"
@@ -100,17 +107,19 @@ function Chatroom() {
                   data-placement="left"
                   data-trigger="hover"
                   title="Small Tip"
+                  onClick={() => handleButtonLineWidth(2)}
                 ></button>
               </div>
               <div>
                 <DrawCanvas
                   username={user.username}
-                  onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)} // set hook to child function
-                  onSetDrawRef={(eraseFunc) =>
+                  // set hooks to child functions
+                  onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)}
+                  onSetDrawEraseRef={(eraseFunc) =>
                     (drawEraseRef.current = eraseFunc)
                   }
-                  onSetEraseRef={(eraseFunc) =>
-                    (drawEraseRef.current = eraseFunc)
+                  onSetLineWidthRef={(lineWidthFunc) =>
+                    (lineWidthRef.current = lineWidthFunc)
                   }
                 />
               </div>

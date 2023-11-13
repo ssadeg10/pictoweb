@@ -90,8 +90,8 @@ function DrawCanvas(props) {
 
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(clear);
-    props.onSetDrawRef(erase);
-    props.onSetEraseRef(erase);
+    props.onSetDrawEraseRef(erase);
+    props.onSetLineWidthRef(lineWidth);
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);
