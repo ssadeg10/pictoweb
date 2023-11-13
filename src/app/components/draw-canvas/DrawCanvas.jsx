@@ -75,7 +75,6 @@ function DrawCanvas(props) {
       }
     }
     function clear() {
-      console.log("clear function in child component");
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
@@ -92,7 +91,6 @@ function DrawCanvas(props) {
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(clear);
 
-    // TODO fix the error output from these event listeners
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);
     canvas.addEventListener("mousemove", drawNew);
