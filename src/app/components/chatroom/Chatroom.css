@@ -78,14 +78,14 @@ body {
   padding: 2%;
 }
 /* #containerTools, */
-#containerClear {
+/* #containerClear {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 .btn.toolbarButton,
 .btn.mssgButton {
-  margin: 3px;
+  margin: 0;
   padding: 5px;
   border: 1px solid black;
   padding: 20px;
@@ -125,7 +125,7 @@ body {
 #sm {
   background-size: 15px auto;
 }
-#send {
+/* #send {
   background: url("/assets/up.svg");
   background-repeat: no-repeat;
   background-size: 35px auto;
@@ -142,7 +142,7 @@ body {
   background-repeat: no-repeat;
   background-size: 35px auto;
   background-position: center;
-}
+} */
 
 .mantine-SegmentedControl-root .drawErase {
   --sc-radius: var(--mantine-radius-sm);

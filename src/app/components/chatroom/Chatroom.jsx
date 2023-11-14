@@ -4,6 +4,7 @@ import {
   AppShellHeader,
   AppShellMain,
   Box,
+  Button,
   Center,
   Group,
   SegmentedControl,
@@ -164,33 +165,23 @@ function Chatroom() {
                 />
               </div>
               <div id="containerMssgPanel">
-                <button
-                  className="btn mssgButton disableSelect"
-                  id="send"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
-                  title="Send"
-                ></button>
-                <button
-                  className="btn mssgButton disableSelect"
-                  id="clone"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
-                  title="Clone"
-                ></button>
+                <Button.Group orientation="vertical">
+                  <Button id="send" title="Send">
+                    <img src="/assets/up.svg" alt="send message" width={25} />
+                  </Button>
+                  <Button id="clone" title="Clone">
+                    <img
+                      src="/assets/down.svg"
+                      alt="clone last chatroom message"
+                      width={25}
+                    />
+                  </Button>
+                </Button.Group>
               </div>
               <div id="containerClear">
-                <button
-                  className="btn mssgButton disableSelect"
-                  id="clear"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
-                  title="Clear"
-                  onClick={handleButtonClear}
-                ></button>
+                <Button id="clear" title="Clear" onClick={handleButtonClear}>
+                  <img src="/assets/clear.svg" alt="clear canvas" width={25} />
+                </Button>
               </div>
             </div>
           </div>
