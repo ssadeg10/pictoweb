@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import CanvasShell from "../canvas-shell/CanvasShell";
+import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
@@ -111,6 +111,6 @@ function DrawCanvas(props) {
     };
   }, [canvasShellRef, drawVars, props]);
 
-  return <CanvasShell username={props.username} ref={canvasShellRef} />;
+  return <BaseCanvasMessage username={props.username} ref={canvasShellRef} />;
 }
 export default DrawCanvas;

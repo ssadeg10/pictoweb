@@ -17,19 +17,21 @@
 #drawLayer {
   background-color: transparent;
 }
-#containerText {
+/* #containerText {
   z-index: 1;
   position: absolute;
   left: 0;
   top: 0;
   margin: 0 auto;
-}
+} */
 #name {
   padding: 1.2% 2%;
   margin: 0 auto;
-  border: 2px solid;
+  position: absolute;
+  opacity: 60%;
+  border: 2px dashed;
   border-top-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  position: absolute;
-  z-index: 3;
+  user-select: none;
+  z-index: 1;
 }

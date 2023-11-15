@@ -41,7 +41,7 @@ body {
 }
 
 .swatches {
-  padding: 0 1.2em 0 1.2em;
+  /* padding: 0 1.2em; */
 }
 
 /* @keyframes swatches {
@@ -49,7 +49,8 @@ body {
 } */
 
 .swatch {
-  height: 1.8em;
+  height: 2em;
+  width: 4em;
 }
 
 .mantine-ColorSwatch-childrenOverlay {

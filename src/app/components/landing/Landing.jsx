@@ -14,6 +14,7 @@ import {
   useMantineColorScheme,
   useComputedColorScheme,
   SegmentedControl,
+  DEFAULT_THEME,
 } from "@mantine/core";
 
 function Landing() {
@@ -113,20 +114,6 @@ function Landing() {
         </main>
         <br />
         <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
-        <SegmentedControl
-          className="drawErase"
-          orientation="vertical"
-          data={[
-            {
-              label: "draw",
-              value: false,
-            },
-            {
-              label: "erase",
-              value: true,
-            },
-          ]}
-        />
       </div>
     </>
   );
@@ -135,13 +122,33 @@ function Landing() {
 export default Landing;
 
 function ColorSelect({ colorValue, setColorValue }) {
+  // const userColors = [
+  //   ["#B8B8F0", "#121592"], //ppl
+  //   ["#FEA1A1", "#AF2121"], //red
+  //   ["#8CF1BA", "#0d793d"], //grn
+  //   ["#feb588", "#e34400"], //org
+  //   ["#76dff2", "#086e9a"], //blu
+  // ];
+
   const userColors = [
-    ["#B8B8F0", "#121592"], //ppl
-    ["#FEA1A1", "#AF2121"], //red
-    ["#8CF1BA", "#0d793d"], //grn
-    ["#feb588", "#e34400"], //org
-    ["#76dff2", "#086e9a"], //blu
+    DEFAULT_THEME.colors.red[5],
+    DEFAULT_THEME.colors.pink[5],
+    DEFAULT_THEME.colors.grape[5],
+    DEFAULT_THEME.colors.violet[5],
+    DEFAULT_THEME.colors.indigo[5],
+    DEFAULT_THEME.colors.blue[5],
+    DEFAULT_THEME.colors.cyan[5],
+    DEFAULT_THEME.colors.teal[5],
+    DEFAULT_THEME.colors.green[5],
+    DEFAULT_THEME.colors.lime[5],
+    DEFAULT_THEME.colors.yellow[5],
+    DEFAULT_THEME.colors.orange[5],
   ];
+
+  /*
+    TODO: need to disable --cp-swatch-size variable in
+    wrapper so swatches are even
+  */
 
   return (
     <Box maw={200} mx="auto">
@@ -151,11 +158,14 @@ function ColorSelect({ colorValue, setColorValue }) {
         value={colorValue}
         classNames={{ swatches: "swatches", swatch: "swatch" }}
         withPicker={false}
-        swatches={userColors.map((array) => {
-          return array[0];
-        })}
+        swatches={userColors}
         onChange={(color) => {
           setColorValue(color);
+        }}
+        styles={{
+          swatches: { justifyContent: "space-evenly" },
+          swatch: { width: "1.8em", height: "1.8em" },
+          wrapper: { "--cp-swatch-size": "20px" },
         }}
       />
     </Box>

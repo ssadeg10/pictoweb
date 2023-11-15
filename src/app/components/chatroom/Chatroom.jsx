@@ -9,11 +9,12 @@ import {
   Group,
   SegmentedControl,
   Slider,
+  Text,
 } from "@mantine/core";
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
-import { memo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
@@ -165,14 +166,20 @@ const LineWidthSlider = (props) => {
   };
 
   return (
-    <Slider
-      value={lineWidthValue}
-      thumbSize={(lineWidthValue + 25) / 2}
-      onChange={setLineWidthValue}
-      onChangeEnd={handleSliderChange}
-      min={1}
-      max={20}
-    />
+    <>
+      <Slider
+        value={lineWidthValue}
+        thumbSize={(lineWidthValue + 30) / 2}
+        color="gray"
+        onChange={setLineWidthValue}
+        onChangeEnd={handleSliderChange}
+        min={1}
+        max={20}
+      />
+      <Text size="xs" styles={{ root: { userSelect: "none" } }}>
+        Line Size
+      </Text>
+    </>
   );
 };
 LineWidthSlider.displayName = "LineWidthSlider";
