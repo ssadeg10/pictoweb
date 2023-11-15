@@ -72,7 +72,8 @@ function DrawCanvas(props) {
     }
 
     function lineWidth(width) {
-      if (width > 1 && width < 15) {
+      console.log(width);
+      if (width > 0) {
         drawVars.width = width;
       }
     }

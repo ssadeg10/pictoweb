@@ -8,11 +8,12 @@ import {
   Center,
   Group,
   SegmentedControl,
+  Slider,
 } from "@mantine/core";
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
-import { useRef } from "react";
+import { memo, useRef, useState } from "react";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
@@ -68,24 +69,6 @@ function Chatroom() {
           <div className="canvasPanel">
             <div id="containerUserElements">
               <div id="containerTools">
-                {/* <button
-                  className="btn toolbarButton toolFunction disableSelect"
-                  id="draw"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Draw"
-                  onClick={() => handleButtonDrawErase(false)}
-                ></button>
-                <button
-                  className="btn toolbarButton toolFunction disableSelect"
-                  id="erase"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Erase"
-                  onClick={() => handleButtonDrawErase(true)}
-                ></button> */}
                 <SegmentedControl
                   className="drawErase"
                   orientation="vertical"
@@ -121,35 +104,9 @@ function Chatroom() {
                     },
                   ]}
                 />
-              </div>
-              <div id="containerSizes">
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="lg"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Large Tip"
-                  onClick={() => handleButtonLineWidth(12)}
-                ></button>
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="md"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Medium Tip"
-                  onClick={() => handleButtonLineWidth(5)}
-                ></button>
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="sm"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Small Tip"
-                  onClick={() => handleButtonLineWidth(2)}
-                ></button>
+                <div id="sliderContainer">
+                  <LineWidthSlider width={handleButtonLineWidth} />
+                </div>
               </div>
               <div>
                 <DrawCanvas
@@ -166,10 +123,10 @@ function Chatroom() {
               </div>
               <div id="containerMssgPanel">
                 <Button.Group orientation="vertical">
-                  <Button id="send" title="Send">
+                  <Button id="send" title="Send" variant="light" color="grey">
                     <img src="/assets/up.svg" alt="send message" width={25} />
                   </Button>
-                  <Button id="clone" title="Clone">
+                  <Button id="clone" title="Clone" variant="light" color="grey">
                     <img
                       src="/assets/down.svg"
                       alt="clone last chatroom message"
@@ -179,7 +136,13 @@ function Chatroom() {
                 </Button.Group>
               </div>
               <div id="containerClear">
-                <Button id="clear" title="Clear" onClick={handleButtonClear}>
+                <Button
+                  id="clear"
+                  title="Clear"
+                  variant="light"
+                  color="grey"
+                  onClick={handleButtonClear}
+                >
                   <img src="/assets/clear.svg" alt="clear canvas" width={25} />
                 </Button>
               </div>
@@ -190,5 +153,26 @@ function Chatroom() {
     </>
   );
 }
-
 export default Chatroom;
+
+const LineWidthSlider = (props) => {
+  const [lineWidthValue, setLineWidthValue] = useState(5);
+  // const [lineWidthEndValue, setLineWidthEndValue] = useState(5);
+
+  const handleSliderChange = (newValue) => {
+    setLineWidthValue(newValue);
+    props.width(newValue);
+  };
+
+  return (
+    <Slider
+      value={lineWidthValue}
+      thumbSize={(lineWidthValue + 25) / 2}
+      onChange={setLineWidthValue}
+      onChangeEnd={handleSliderChange}
+      min={1}
+      max={20}
+    />
+  );
+};
+LineWidthSlider.displayName = "LineWidthSlider";
