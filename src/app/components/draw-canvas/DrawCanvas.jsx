@@ -1,13 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
-
-  useEffect(() => {
-    const canvas = canvasShellRef.current;
-    const context = canvas.getContext("2d");
-    const drawVars = {
+  const drawVars = useMemo(() => {
+    return {
       paint: false,
       width: 5,
       color: "#000000",
@@ -16,6 +13,12 @@ function DrawCanvas(props) {
         y: 0,
       },
     };
+  });
+
+  useEffect(() => {
+    const canvas = canvasShellRef.current;
+    const context = canvas.getContext("2d");
+
     canvas.style.cursor = "crosshair";
 
     if (context) {
