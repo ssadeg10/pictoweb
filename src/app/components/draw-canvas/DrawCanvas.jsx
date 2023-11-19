@@ -3,26 +3,26 @@ import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
-  const drawVars = {
-    paint: false,
-    width: 5,
-    color: "#000000",
-    pos: {
-      x: 0,
-      y: 0,
-    },
-  };
 
   useEffect(() => {
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
-
+    const drawVars = {
+      paint: false,
+      width: 5,
+      color: "#000000",
+      pos: {
+        x: 0,
+        y: 0,
+      },
+    };
     canvas.style.cursor = "crosshair";
 
     if (context) {
       resize();
       context.imageSmoothingEnabled = false;
-      context.filter = "url(#remove-alpha)";
+      context.filter =
+        'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter></svg>#f\')';
     } else {
       console.error("Cannot load canvas context");
     }

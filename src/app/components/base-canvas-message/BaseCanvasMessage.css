@@ -6,6 +6,7 @@
   border: 2px solid black;
   border-radius: 8px;
   image-rendering: pixelated;
+  image-rendering: crisp-edges;
 }
 #containerCanvas {
   position: relative;
