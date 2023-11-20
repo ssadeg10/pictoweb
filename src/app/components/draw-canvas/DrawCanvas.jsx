@@ -1,10 +1,18 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
+import { useHotkeys } from "@mantine/hooks";
 
 function DrawCanvas(props) {
+  useHotkeys([
+    ["mod+Z", () => console.log("undo")],
+    ["mod+shift+Z", () => console.log("redo")],
+    ["ctrl+Y", () => console.log("redo")],
+  ]);
+
   const canvasShellRef = useRef(null);
-  const drawVars = useMemo(() => {
-    return {
+
+  useEffect(() => {
+    const drawVars = {
       paint: false,
       width: 5,
       color: "#000000",
@@ -13,9 +21,9 @@ function DrawCanvas(props) {
         y: 0,
       },
     };
-  });
+    let drawHistoryStack = [];
+    let currentLineHistoryStack = [];
 
-  useEffect(() => {
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
 
@@ -26,6 +34,11 @@ function DrawCanvas(props) {
       context.imageSmoothingEnabled = false;
       context.filter =
         'url(\'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"><filter id="f" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncA type="discrete" tableValues="0 1"/></feComponentTransfer></filter></svg>#f\')';
+      context.lineWidth = drawVars.width;
+      context.strokeWidth = drawVars.width;
+      context.strokeStyle = drawVars.color;
+      context.lineCap = "round";
+      context.lineJoin = "round";
     } else {
       console.error("Cannot load canvas context");
     }
@@ -43,17 +56,13 @@ function DrawCanvas(props) {
 
       context.beginPath(); // begin
 
-      context.lineWidth = drawVars.width;
-      context.strokeWidth = drawVars.width;
-      context.lineCap = "round";
-      context.lineJoin = "round";
-      context.strokeStyle = drawVars.color;
-
       context.moveTo(drawVars.pos.x, drawVars.pos.y);
       setPosition(e);
       context.lineTo(drawVars.pos.x, drawVars.pos.y);
 
       context.stroke();
+
+      currentLineHistoryStack.push(drawVars);
     }
 
     // function dot() {
@@ -75,13 +84,15 @@ function DrawCanvas(props) {
     }
 
     function lineWidth(width) {
-      console.log(width);
       if (width > 0) {
         drawVars.width = width;
+        context.lineWidth = width;
+        context.strokeWidth = width;
       }
     }
     function clear() {
       context.clearRect(0, 0, canvas.width, canvas.height);
+      drawHistoryStack.push("clear");
     }
 
     function erase(enable) {
@@ -104,6 +115,10 @@ function DrawCanvas(props) {
     canvas.addEventListener("mousemove", drawNew);
     canvas.addEventListener("mouseenter", setPosition);
     // canvas.addEventListener("click", {}, false);
+    canvas.addEventListener("mouseup", () => {
+      drawHistoryStack.push([...currentLineHistoryStack]);
+      currentLineHistoryStack.length = 0; // clear stack
+    });
 
     return () => {
       // Cleanup on unmount
@@ -112,7 +127,7 @@ function DrawCanvas(props) {
       canvas.removeEventListener("mouseenter", setPosition);
       // canvas.removeEventListener("click", {}, false);
     };
-  }, [canvasShellRef, drawVars, props]);
+  }, [canvasShellRef, props]);
 
   return <BaseCanvasMessage username={props.username} ref={canvasShellRef} />;
 }
