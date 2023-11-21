@@ -1,19 +1,12 @@
 import { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
-import { useHotkeys } from "@mantine/hooks";
 
 function DrawCanvas(props) {
-  useHotkeys([
-    ["mod+Z", () => console.log("undo")],
-    ["mod+shift+Z", () => console.log("redo")],
-    ["ctrl+Y", () => console.log("redo")],
-  ]);
-
   const canvasShellRef = useRef(null);
 
   useEffect(() => {
     const drawVars = {
-      paint: false,
+      erase: false,
       width: 5,
       color: "#000000",
       pos: {
@@ -21,13 +14,15 @@ function DrawCanvas(props) {
         y: 0,
       },
     };
-    let drawHistoryStack = [];
-    let currentLineHistoryStack = [];
+    let pos = {
+      x: 0,
+      y: 0,
+    };
 
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
 
-    canvas.style.cursor = "crosshair";
+    // canvas.style.cursor = "crosshair";
 
     if (context) {
       resize();
@@ -50,37 +45,29 @@ function DrawCanvas(props) {
       canvas.height = canvas.getBoundingClientRect().height - h;
     }
 
-    function drawNew(e) {
+    function drawOnMouseMove(e) {
       // mouse left button must be pressed
       if (e.buttons !== 1) return;
 
       context.beginPath(); // begin
 
-      context.moveTo(drawVars.pos.x, drawVars.pos.y);
+      context.moveTo(pos.x, pos.y);
       setPosition(e);
-      context.lineTo(drawVars.pos.x, drawVars.pos.y);
+      context.lineTo(pos.x, pos.y);
 
       context.stroke();
-
-      currentLineHistoryStack.push(drawVars);
     }
 
-    // function dot() {
-    //   context.beginPath();
-    //   context.fillStyle = drawVars.color;
-    //   context.arc(
-    //     drawVars.pos.x,
-    //     drawVars.pos.y,
-    //     drawVars.width / 2,
-    //     0,
-    //     2 * Math.PI
-    //   );
-    //   context.fill();
-    // }
+    function dot() {
+      context.beginPath();
+      context.fillStyle = drawVars.color;
+      context.arc(pos.x, pos.y, drawVars.width / 2, 0, 2 * Math.PI);
+      context.fill();
+    }
 
     function setPosition(e) {
       const rect = canvas.getBoundingClientRect();
-      drawVars.pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
 
     function lineWidth(width) {
@@ -92,15 +79,16 @@ function DrawCanvas(props) {
     }
     function clear() {
       context.clearRect(0, 0, canvas.width, canvas.height);
-      drawHistoryStack.push("clear");
     }
 
     function erase(enable) {
       if (enable) {
         context.globalCompositeOperation = "destination-out";
+        drawVars.erase = true;
         drawVars.color = "#ffffff";
       } else {
         context.globalCompositeOperation = "source-over";
+        drawVars.erase = false;
         drawVars.color = "#000000";
       }
     }
@@ -112,20 +100,16 @@ function DrawCanvas(props) {
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);
-    canvas.addEventListener("mousemove", drawNew);
+    canvas.addEventListener("mousemove", drawOnMouseMove);
     canvas.addEventListener("mouseenter", setPosition);
-    // canvas.addEventListener("click", {}, false);
-    canvas.addEventListener("mouseup", () => {
-      drawHistoryStack.push([...currentLineHistoryStack]);
-      currentLineHistoryStack.length = 0; // clear stack
-    });
+    canvas.addEventListener("click", dot);
 
     return () => {
       // Cleanup on unmount
       canvas.removeEventListener("mousedown", setPosition);
-      canvas.removeEventListener("mousemove", drawNew);
+      canvas.removeEventListener("mousemove", drawOnMouseMove);
       canvas.removeEventListener("mouseenter", setPosition);
-      // canvas.removeEventListener("click", {}, false);
+      canvas.removeEventListener("click", dot);
     };
   }, [canvasShellRef, props]);
 
