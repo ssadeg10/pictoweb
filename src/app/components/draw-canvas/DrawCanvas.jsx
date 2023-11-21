@@ -84,6 +84,11 @@ function DrawCanvas(props) {
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    function recordedClear() {
+      clear();
+      pushLineBlob();
+    }
+
     function erase(enable) {
       if (enable) {
         context.globalCompositeOperation = "destination-out";
@@ -96,14 +101,36 @@ function DrawCanvas(props) {
       }
     }
 
-    function pushLineBlob() {}
+    function pushLineBlob() {
+      if (undoStack.length >= 10) {
+        // deletes oldest blob and revokes it
+        URL.revokeObjectURL(undoStack.splice(0, 1));
+      }
+      canvas.toBlob((blob) => {
+        undoStack.push(URL.createObjectURL(blob));
+      });
+    }
 
-    function undo() {}
+    function undo() {
+      redoStack.push(undoStack.pop());
+      const blobURL = undoStack.at(-1);
+      let img = new Image();
+
+      clear();
+      img.onload = (e) => {
+        context.drawImage(e.target, 0, 0);
+      };
+      img.src = blobURL;
+
+      // createImageBitmap(blob).then((imageBitmap) => {
+      //   context.drawImage(imageBitmap, 0, 0);
+      // });
+    }
 
     function redo() {}
 
     // Passes the child function to the parent which assigns to a hook
-    props.onSetClearRef(clear);
+    props.onSetClearRef(recordedClear);
     props.onSetDrawEraseRef(erase);
     props.onSetLineWidthRef(lineWidth);
 
@@ -125,6 +152,13 @@ function DrawCanvas(props) {
 
     return () => {
       // Cleanup on unmount
+      undoStack.forEach((blob) => {
+        URL.revokeObjectURL(blob);
+      });
+      redoStack.forEach((blob) => {
+        URL.revokeObjectURL(blob);
+      });
+
       canvas.removeEventListener("mousedown", setPosition);
       canvas.removeEventListener("mousemove", drawOnMouseMove);
       canvas.removeEventListener("mouseenter", setPosition);
