@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
+import { getHotkeyHandler } from "@mantine/hooks";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
@@ -18,6 +19,8 @@ function DrawCanvas(props) {
       x: 0,
       y: 0,
     };
+    let undoStack = [];
+    let redoStack = [];
 
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
@@ -93,6 +96,12 @@ function DrawCanvas(props) {
       }
     }
 
+    function pushLineBlob() {}
+
+    function undo() {}
+
+    function redo() {}
+
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(clear);
     props.onSetDrawEraseRef(erase);
@@ -103,6 +112,16 @@ function DrawCanvas(props) {
     canvas.addEventListener("mousemove", drawOnMouseMove);
     canvas.addEventListener("mouseenter", setPosition);
     canvas.addEventListener("click", dot);
+    canvas.addEventListener("mouseup", pushLineBlob);
+
+    document.body.addEventListener(
+      "keydown",
+      getHotkeyHandler([
+        ["mod+Z", undo],
+        ["mod+shift+Z", () => console.log("redo")],
+        ["ctrl+Y", () => console.log("redo")],
+      ])
+    );
 
     return () => {
       // Cleanup on unmount
