@@ -1,7 +1,7 @@
 import { forwardRef } from "react";
-import "./CanvasShell.css";
+import "./BaseCanvasMessage.css";
 
-const CanvasShell = forwardRef(function CanvasShell(props, ref) {
+const BaseCanvasMessage = forwardRef(function CanvasShell(props, ref) {
   const username = props.username;
   // recieve ref hook from parent component
 
@@ -15,13 +15,13 @@ const CanvasShell = forwardRef(function CanvasShell(props, ref) {
           Your browser does not support HTML5 Canvas
         </canvas>
       </div>
-      <div id="containerText">
+      {/* <div id="containerText">
         <canvas className="canvas" id="textLayer">
           Your browser does not support HTML5 Canvas
         </canvas>
-      </div>
+      </div> */}
     </div>
   );
 });
 
-export default CanvasShell;
+export default BaseCanvasMessage;

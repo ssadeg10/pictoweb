@@ -3,12 +3,18 @@ import {
   AppShellFooter,
   AppShellHeader,
   AppShellMain,
+  Box,
+  Button,
+  Center,
   Group,
+  SegmentedControl,
+  Slider,
+  Text,
 } from "@mantine/core";
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
@@ -20,12 +26,14 @@ function Chatroom() {
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
+    var eraseEnableBool = String(eraseEnable).toLowerCase() === "true";
+
     if (typeof drawEraseRef.current === "function") {
-      drawEraseRef.current(eraseEnable);
+      drawEraseRef.current(eraseEnableBool);
     } else {
       console.error(
         `${
-          eraseEnable ? "Erase" : "Draw"
+          eraseEnableBool ? "Erase" : "Draw"
         } button event: Erase function is not defined`
       );
     }
@@ -62,53 +70,44 @@ function Chatroom() {
           <div className="canvasPanel">
             <div id="containerUserElements">
               <div id="containerTools">
-                <button
-                  className="btn toolbarButton toolFunction disableSelect"
-                  id="draw"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Draw"
-                  onClick={() => handleButtonDrawErase(false)}
-                ></button>
-                <button
-                  className="btn toolbarButton toolFunction disableSelect"
-                  id="erase"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Erase"
-                  onClick={() => handleButtonDrawErase(true)}
-                ></button>
-              </div>
-              <div id="containerSizes">
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="lg"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Large Tip"
-                  onClick={() => handleButtonLineWidth(12)}
-                ></button>
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="md"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Medium Tip"
-                  onClick={() => handleButtonLineWidth(5)}
-                ></button>
-                <button
-                  className="btn toolbarButton lineWidth disableSelect"
-                  id="sm"
-                  data-toggle="tooltip"
-                  data-placement="left"
-                  data-trigger="hover"
-                  title="Small Tip"
-                  onClick={() => handleButtonLineWidth(2)}
-                ></button>
+                <SegmentedControl
+                  className="drawErase"
+                  orientation="vertical"
+                  onChange={(newValue) => {
+                    handleButtonDrawErase(newValue);
+                  }}
+                  data={[
+                    {
+                      value: "false",
+                      label: (
+                        <Center>
+                          <img
+                            src="/assets/pencil.svg"
+                            alt="pencil icon"
+                            width={25}
+                          />
+                          <Box ml={10}>Draw</Box>
+                        </Center>
+                      ),
+                    },
+                    {
+                      value: "true",
+                      label: (
+                        <Center>
+                          <img
+                            src="/assets/eraser.svg"
+                            alt="pencil icon"
+                            width={25}
+                          />
+                          <Box ml={10}>Erase</Box>
+                        </Center>
+                      ),
+                    },
+                  ]}
+                />
+                <div id="sliderContainer">
+                  <LineWidthSlider width={handleButtonLineWidth} />
+                </div>
               </div>
               <div>
                 <DrawCanvas
@@ -124,33 +123,29 @@ function Chatroom() {
                 />
               </div>
               <div id="containerMssgPanel">
-                <button
-                  className="btn mssgButton disableSelect"
-                  id="send"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
-                  title="Send"
-                ></button>
-                <button
-                  className="btn mssgButton disableSelect"
-                  id="clone"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
-                  title="Clone"
-                ></button>
+                <Button.Group orientation="vertical">
+                  <Button id="send" title="Send" variant="light" color="grey">
+                    <img src="/assets/up.svg" alt="send message" width={25} />
+                  </Button>
+                  <Button id="clone" title="Clone" variant="light" color="grey">
+                    <img
+                      src="/assets/down.svg"
+                      alt="clone last chatroom message"
+                      width={25}
+                    />
+                  </Button>
+                </Button.Group>
               </div>
               <div id="containerClear">
-                <button
-                  className="btn mssgButton disableSelect"
+                <Button
                   id="clear"
-                  data-toggle="tooltip"
-                  data-placement="right"
-                  data-trigger="hover"
                   title="Clear"
+                  variant="light"
+                  color="grey"
                   onClick={handleButtonClear}
-                ></button>
+                >
+                  <img src="/assets/clear.svg" alt="clear canvas" width={25} />
+                </Button>
               </div>
             </div>
           </div>
@@ -159,5 +154,32 @@ function Chatroom() {
     </>
   );
 }
-
 export default Chatroom;
+
+const LineWidthSlider = (props) => {
+  const [lineWidthValue, setLineWidthValue] = useState(5);
+  // const [lineWidthEndValue, setLineWidthEndValue] = useState(5);
+
+  const handleSliderChange = (newValue) => {
+    setLineWidthValue(newValue);
+    props.width(newValue);
+  };
+
+  return (
+    <>
+      <Slider
+        value={lineWidthValue}
+        thumbSize={(lineWidthValue + 30) / 2}
+        color="gray"
+        onChange={setLineWidthValue}
+        onChangeEnd={handleSliderChange}
+        min={1}
+        max={20}
+      />
+      <Text size="xs" styles={{ root: { userSelect: "none" } }}>
+        Line Size
+      </Text>
+    </>
+  );
+};
+LineWidthSlider.displayName = "LineWidthSlider";

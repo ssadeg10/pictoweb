@@ -7,10 +7,8 @@ import Chatroom from "./components/chatroom/Chatroom";
 function App() {
   return (
     <MantineProvider>
-      <div>
-        {/* <Landing /> */}
-        <Chatroom />
-      </div>
+      {/* <Landing /> */}
+      <Chatroom />
     </MantineProvider>
   );
 }
