@@ -111,6 +111,8 @@ function DrawCanvas(props) {
       });
     }
 
+    // TODO: fix undo on erase lines, write redo func
+
     function undo() {
       redoStack.push(undoStack.pop());
       const blobURL = undoStack.at(-1);
