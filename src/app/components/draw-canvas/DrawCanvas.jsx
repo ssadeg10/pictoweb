@@ -21,6 +21,7 @@ function DrawCanvas(props) {
     };
     let undoStack = [];
     let redoStack = [];
+    const MAX_STACK_LENGTH = 10;
 
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
@@ -104,7 +105,7 @@ function DrawCanvas(props) {
     }
 
     function pushLineBlob() {
-      if (undoStack.length > 9) {
+      if (undoStack.length > MAX_STACK_LENGTH) {
         // deletes oldest blob and revokes it
         URL.revokeObjectURL(...undoStack.splice(0, 1));
       }
@@ -118,7 +119,10 @@ function DrawCanvas(props) {
         return;
       }
 
-      // important that execution of these 2 lines to be flipped from redo()
+      // important that execution of these lines be flipped from redo()
+      if (redoStack.length > MAX_STACK_LENGTH) {
+        URL.revokeObjectURL(...redoStack.splice(0, 1));
+      }
       redoStack.push(undoStack.pop());
       const blobURL = undoStack.at(-1);
 
@@ -130,8 +134,11 @@ function DrawCanvas(props) {
         return;
       }
 
-      // important that execution of these 2 lines to be flipped from undo()
+      // important that execution of these lines be flipped from undo()
       const blobURL = redoStack.at(-1);
+      if (undoStack.length > MAX_STACK_LENGTH) {
+        URL.revokeObjectURL(...undoStack.splice(0, 1));
+      }
       undoStack.push(redoStack.pop());
 
       loadBlobToCanvas(blobURL);
