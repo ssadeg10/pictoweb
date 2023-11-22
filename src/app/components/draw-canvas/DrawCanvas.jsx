@@ -22,6 +22,8 @@ function DrawCanvas(props) {
     let undoStack = [];
     let redoStack = [];
     const MAX_STACK_LENGTH = 10;
+    const MIN_UNDO_STACK_LENGTH = 2;
+    const MIN_REDO_STACK_LENGTH = 1;
 
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
@@ -105,43 +107,49 @@ function DrawCanvas(props) {
     }
 
     function pushLineBlob() {
-      if (undoStack.length > MAX_STACK_LENGTH) {
-        // deletes oldest blob and revokes it
-        URL.revokeObjectURL(...undoStack.splice(0, 1));
-      }
+      handleStackOverflow();
       canvas.toBlob((blob) => {
         undoStack.push(URL.createObjectURL(blob));
       });
     }
 
     function undo() {
-      if (undoStack.length < 2) {
+      if (undoStack.length < MIN_UNDO_STACK_LENGTH) {
         return;
       }
 
-      // important that execution of these lines be flipped from redo()
-      if (redoStack.length > MAX_STACK_LENGTH) {
-        URL.revokeObjectURL(...redoStack.splice(0, 1));
-      }
-      redoStack.push(undoStack.pop());
+      //! order of execution important!
+      handleStackOverflow();
+      const lastUndoItem = undoStack.pop();
       const blobURL = undoStack.at(-1);
+      redoStack.push(lastUndoItem);
 
       loadBlobToCanvas(blobURL);
     }
 
     function redo() {
-      if (redoStack.length < 1) {
+      if (redoStack.length < MIN_REDO_STACK_LENGTH) {
         return;
       }
 
-      // important that execution of these lines be flipped from undo()
+      //! order of execution important!
       const blobURL = redoStack.at(-1);
-      if (undoStack.length > MAX_STACK_LENGTH) {
-        URL.revokeObjectURL(...undoStack.splice(0, 1));
-      }
-      undoStack.push(redoStack.pop());
+      handleStackOverflow();
+      const lastRedoItem = redoStack.pop();
+      undoStack.push(lastRedoItem);
 
       loadBlobToCanvas(blobURL);
+    }
+
+    function handleStackOverflow() {
+      if (undoStack.length > MAX_STACK_LENGTH) {
+        // deletes oldest blob and revokes it
+        URL.revokeObjectURL(undoStack.shift());
+      }
+
+      if (redoStack.length > MAX_STACK_LENGTH) {
+        URL.revokeObjectURL(redoStack.shift());
+      }
     }
 
     function loadBlobToCanvas(blobURL) {
