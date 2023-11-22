@@ -37,6 +37,8 @@ function DrawCanvas(props) {
       context.strokeStyle = drawVars.color;
       context.lineCap = "round";
       context.lineJoin = "round";
+
+      pushLineBlob(); // start canvas undo history
     } else {
       console.error("Cannot load canvas context");
     }
@@ -102,34 +104,53 @@ function DrawCanvas(props) {
     }
 
     function pushLineBlob() {
-      if (undoStack.length >= 10) {
+      if (undoStack.length > 9) {
         // deletes oldest blob and revokes it
-        URL.revokeObjectURL(undoStack.splice(0, 1));
+        URL.revokeObjectURL(...undoStack.splice(0, 1));
       }
       canvas.toBlob((blob) => {
         undoStack.push(URL.createObjectURL(blob));
       });
     }
 
-    // TODO: fix undo on erase lines, write redo func
-
     function undo() {
+      if (undoStack.length < 2) {
+        return;
+      }
+
+      // important that execution of these 2 lines to be flipped from redo()
       redoStack.push(undoStack.pop());
       const blobURL = undoStack.at(-1);
-      let img = new Image();
 
-      clear();
-      img.onload = (e) => {
-        context.drawImage(e.target, 0, 0);
-      };
-      img.src = blobURL;
-
-      // createImageBitmap(blob).then((imageBitmap) => {
-      //   context.drawImage(imageBitmap, 0, 0);
-      // });
+      loadBlobToCanvas(blobURL);
     }
 
-    function redo() {}
+    function redo() {
+      if (redoStack.length < 1) {
+        return;
+      }
+
+      // important that execution of these 2 lines to be flipped from undo()
+      const blobURL = redoStack.at(-1);
+      undoStack.push(redoStack.pop());
+
+      loadBlobToCanvas(blobURL);
+    }
+
+    function loadBlobToCanvas(blobURL) {
+      // set to draw and restore state after drawing
+      let currentEraseMode = drawVars.erase;
+      erase(false);
+
+      let img = new Image();
+      img.onload = (e) => {
+        clear();
+        context.drawImage(e.target, 0, 0);
+        erase(currentEraseMode);
+      };
+
+      img.src = blobURL;
+    }
 
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(recordedClear);
@@ -147,8 +168,8 @@ function DrawCanvas(props) {
       "keydown",
       getHotkeyHandler([
         ["mod+Z", undo],
-        ["mod+shift+Z", () => console.log("redo")],
-        ["ctrl+Y", () => console.log("redo")],
+        ["mod+shift+Z", redo],
+        ["ctrl+Y", redo],
       ])
     );
 
@@ -165,6 +186,15 @@ function DrawCanvas(props) {
       canvas.removeEventListener("mousemove", drawOnMouseMove);
       canvas.removeEventListener("mouseenter", setPosition);
       canvas.removeEventListener("click", dot);
+      canvas.removeEventListener("mouseup", pushLineBlob);
+      document.body.removeEventListener(
+        "keydown",
+        getHotkeyHandler([
+          ["mod+Z", undo],
+          ["mod+shift+Z", redo],
+          ["ctrl+Y", redo],
+        ])
+      );
     };
   }, [canvasShellRef, props]);
 
