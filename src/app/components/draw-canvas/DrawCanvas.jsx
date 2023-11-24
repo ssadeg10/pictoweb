@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
+import { getHotkeyHandler } from "@mantine/hooks";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
@@ -9,15 +10,16 @@ function DrawCanvas(props) {
       erase: false,
       width: 5,
       color: "#000000",
-      pos: {
-        x: 0,
-        y: 0,
-      },
     };
-    let pos = {
+    const pos = {
       x: 0,
       y: 0,
     };
+    const undoStack = [];
+    const redoStack = [];
+    const MAX_STACK_LENGTH = 10;
+    const MIN_UNDO_STACK_LENGTH = 2;
+    const MIN_REDO_STACK_LENGTH = 1;
 
     const canvas = canvasShellRef.current;
     const context = canvas.getContext("2d");
@@ -34,6 +36,8 @@ function DrawCanvas(props) {
       context.strokeStyle = drawVars.color;
       context.lineCap = "round";
       context.lineJoin = "round";
+
+      pushLineBlob(); // start canvas undo history
     } else {
       console.error("Cannot load canvas context");
     }
@@ -67,7 +71,8 @@ function DrawCanvas(props) {
 
     function setPosition(e) {
       const rect = canvas.getBoundingClientRect();
-      pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      pos.x = e.clientX - rect.left;
+      pos.y = e.clientY - rect.top;
     }
 
     function lineWidth(width) {
@@ -79,6 +84,11 @@ function DrawCanvas(props) {
     }
     function clear() {
       context.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function recordClear() {
+      clear();
+      pushLineBlob();
     }
 
     function erase(enable) {
@@ -93,8 +103,69 @@ function DrawCanvas(props) {
       }
     }
 
+    function pushLineBlob() {
+      handleStackOverflow();
+      canvas.toBlob((blob) => {
+        undoStack.push(URL.createObjectURL(blob));
+      });
+    }
+
+    function undo() {
+      if (undoStack.length < MIN_UNDO_STACK_LENGTH) {
+        return;
+      }
+
+      //! order of execution important!
+      handleStackOverflow();
+      const lastUndoItem = undoStack.pop();
+      const blobURL = undoStack.at(-1);
+      redoStack.push(lastUndoItem);
+
+      loadBlobToCanvas(blobURL);
+    }
+
+    function redo() {
+      if (redoStack.length < MIN_REDO_STACK_LENGTH) {
+        return;
+      }
+
+      //! order of execution important!
+      const blobURL = redoStack.at(-1);
+      handleStackOverflow();
+      const lastRedoItem = redoStack.pop();
+      undoStack.push(lastRedoItem);
+
+      loadBlobToCanvas(blobURL);
+    }
+
+    function handleStackOverflow() {
+      if (undoStack.length > MAX_STACK_LENGTH) {
+        // deletes oldest blob and revokes it
+        URL.revokeObjectURL(undoStack.shift());
+      }
+
+      if (redoStack.length > MAX_STACK_LENGTH) {
+        URL.revokeObjectURL(redoStack.shift());
+      }
+    }
+
+    function loadBlobToCanvas(blobURL) {
+      // set to draw and restore state after drawing
+      let currentEraseMode = drawVars.erase;
+      erase(false);
+
+      let img = new Image();
+      img.onload = (e) => {
+        clear();
+        context.drawImage(e.target, 0, 0);
+        erase(currentEraseMode);
+      };
+
+      img.src = blobURL;
+    }
+
     // Passes the child function to the parent which assigns to a hook
-    props.onSetClearRef(clear);
+    props.onSetClearRef(recordClear);
     props.onSetDrawEraseRef(erase);
     props.onSetLineWidthRef(lineWidth);
 
@@ -103,13 +174,39 @@ function DrawCanvas(props) {
     canvas.addEventListener("mousemove", drawOnMouseMove);
     canvas.addEventListener("mouseenter", setPosition);
     canvas.addEventListener("click", dot);
+    canvas.addEventListener("mouseup", pushLineBlob);
+
+    document.body.addEventListener(
+      "keydown",
+      getHotkeyHandler([
+        ["mod+Z", undo],
+        ["mod+shift+Z", redo],
+        ["ctrl+Y", redo],
+      ])
+    );
 
     return () => {
       // Cleanup on unmount
+      undoStack.forEach((blob) => {
+        URL.revokeObjectURL(blob);
+      });
+      redoStack.forEach((blob) => {
+        URL.revokeObjectURL(blob);
+      });
+
       canvas.removeEventListener("mousedown", setPosition);
       canvas.removeEventListener("mousemove", drawOnMouseMove);
       canvas.removeEventListener("mouseenter", setPosition);
       canvas.removeEventListener("click", dot);
+      canvas.removeEventListener("mouseup", pushLineBlob);
+      document.body.removeEventListener(
+        "keydown",
+        getHotkeyHandler([
+          ["mod+Z", undo],
+          ["mod+shift+Z", redo],
+          ["ctrl+Y", redo],
+        ])
+      );
     };
   }, [canvasShellRef, props]);
 
