@@ -10,17 +10,13 @@ function DrawCanvas(props) {
       erase: false,
       width: 5,
       color: "#000000",
-      pos: {
-        x: 0,
-        y: 0,
-      },
     };
-    let pos = {
+    const pos = {
       x: 0,
       y: 0,
     };
-    let undoStack = [];
-    let redoStack = [];
+    const undoStack = [];
+    const redoStack = [];
     const MAX_STACK_LENGTH = 10;
     const MIN_UNDO_STACK_LENGTH = 2;
     const MIN_REDO_STACK_LENGTH = 1;
@@ -75,7 +71,8 @@ function DrawCanvas(props) {
 
     function setPosition(e) {
       const rect = canvas.getBoundingClientRect();
-      pos = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      pos.x = e.clientX - rect.left;
+      pos.y = e.clientY - rect.top;
     }
 
     function lineWidth(width) {
@@ -89,7 +86,7 @@ function DrawCanvas(props) {
       context.clearRect(0, 0, canvas.width, canvas.height);
     }
 
-    function recordedClear() {
+    function recordClear() {
       clear();
       pushLineBlob();
     }
@@ -168,7 +165,7 @@ function DrawCanvas(props) {
     }
 
     // Passes the child function to the parent which assigns to a hook
-    props.onSetClearRef(recordedClear);
+    props.onSetClearRef(recordClear);
     props.onSetDrawEraseRef(erase);
     props.onSetLineWidthRef(lineWidth);
 
