@@ -62,11 +62,21 @@ function DrawCanvas(props) {
       context.stroke();
     }
 
+    /**
+     * TODO
+     * Bug: when drawing multiple dots (firing the click event),
+     * the mouseup event isn't triggered on the lastest dot drawn.
+     * This results in the lastest dot not saving to the undo stack,
+     * causing 2 dots to undo instead of 1.
+     */
+
     function dot() {
       context.beginPath();
       context.fillStyle = drawVars.color;
       context.arc(pos.x, pos.y, drawVars.width / 2, 0, 2 * Math.PI);
       context.fill();
+
+      // pushLineBlob(); // this just makes unnecessary duplicates of each dot
     }
 
     function setPosition(e) {
