@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"fmt"
 	"net/http"
 )
 
@@ -14,7 +13,8 @@ func NewRouter() http.Handler {
 }
 
 func testHandler(w http.ResponseWriter, r *http.Request)  {
-	fmt.Fprintln(w, "testing...")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte("testing..."))
 }
 
 func errStatusHandler(w http.ResponseWriter, r *http.Request)  {
