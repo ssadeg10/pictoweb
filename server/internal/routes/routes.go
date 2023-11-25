@@ -8,10 +8,15 @@ import (
 func NewRouter() http.Handler {
 	mux := http.NewServeMux();
 
-	mux.HandleFunc("/", indexHandler)
+	mux.HandleFunc("/test", testHandler)
+	mux.HandleFunc("/error", errStatusHandler)
 	return mux
 }
 
-func indexHandler(w http.ResponseWriter, r *http.Request)  {
+func testHandler(w http.ResponseWriter, r *http.Request)  {
 	fmt.Fprintln(w, "testing...")
+}
+
+func errStatusHandler(w http.ResponseWriter, r *http.Request)  {
+	w.WriteHeader(http.StatusInternalServerError);
 }
