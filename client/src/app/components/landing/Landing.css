@@ -18,7 +18,16 @@ body {
   width: 100%;
   height: 8rem;
   /* filter: invert(100%); */
-  animation: logo 1 1s linear alternate;
+  animation: logo 1 1s linear;
+}
+
+@keyframes logo {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .mantine-ActionIcon-root {
@@ -73,13 +82,4 @@ body {
   width: 10em;
   height: 12em;
   cursor: pointer;
-}
-
-@keyframes logo {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
 }

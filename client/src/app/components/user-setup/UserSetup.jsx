@@ -39,11 +39,14 @@ function UserSetup() {
 
   function checkInputs(e) {
     e.preventDefault();
-    if (colorValue == "#fff" || username == "" || username == undefined) {
+    if (colorValue == "#fff") {
+      setisTooltipVisible(true);
       return;
-    } else {
-      requestNewRoom();
     }
+    if (username == "" || username == undefined) {
+      return;
+    }
+    requestNewRoom();
   }
 
   return (
