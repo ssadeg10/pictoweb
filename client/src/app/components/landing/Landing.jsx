@@ -1,4 +1,3 @@
-import { useState } from "react";
 import logo from "/assets/picto.svg";
 import "./Landing.css";
 import {
@@ -6,27 +5,59 @@ import {
   useMantineColorScheme,
   useComputedColorScheme,
 } from "@mantine/core";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 
 function Landing() {
   const { setColorScheme } = useMantineColorScheme();
   const computedColorScheme = useComputedColorScheme("light", {
     getInitialValueInEffect: true,
   });
+  const { pathname } = useLocation();
+  const variants = {
+    initialVar: {
+      opacity: 0,
+      x: -10,
+    },
+    inVar: {
+      opacity: 1,
+      x: 0,
+    },
+    // outVar: {
+    //   opacity: 0,
+    //   x: 10,
+    // },
+  };
+
+  const transition = {
+    type: "tween",
+    ease: "linear",
+    duration: 0.2,
+  };
 
   return (
     <>
       <div id="containerMain">
-        <div>
+        <motion.div transition={transition} layout>
           <img id="logo" src={logo} />
-        </div>
+        </motion.div>
         <br />
         <br />
         <main id="mainJoin">
-          <Outlet />
+          <motion.div
+            key={pathname}
+            initial="initialVar"
+            animate="inVar"
+            variants={variants}
+            transition={transition}
+          >
+            <Outlet />
+          </motion.div>
         </main>
         <br />
-        <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
+        <motion.div transition={transition} layout>
+          <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
+        </motion.div>
       </div>
       <ActionIcon
         onClick={() =>

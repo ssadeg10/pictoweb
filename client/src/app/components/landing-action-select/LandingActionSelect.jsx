@@ -1,5 +1,5 @@
 import { Group, Paper, Text } from "@mantine/core";
-import { Link, useLinkClickHandler } from "react-router-dom";
+import { useLinkClickHandler } from "react-router-dom";
 
 function LandingActionSelect() {
   return (
