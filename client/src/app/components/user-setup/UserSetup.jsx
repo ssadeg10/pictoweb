@@ -5,11 +5,13 @@ import {
   ColorPicker,
   DEFAULT_THEME,
   Group,
+  LoadingOverlay,
   Popover,
   Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -17,59 +19,80 @@ function UserSetup() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
   const [isTooltipVisible, setisTooltipVisible] = useState(true);
+  const [visible, visibilityHandler] = useDisclosure(false);
+
+  function verifyRoomCode(e) {
+    e.preventDefault();
+    visibilityHandler.open();
+  }
 
   return (
     <>
-      <Group justify="center">
-        <Popover
-          onOpen={() => {
-            setisTooltipVisible(false);
-          }}
-          position="left"
-          trapFocus
-          withArrow
-        >
-          <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
-            <Popover.Target>
-              <div
-                className="user-color-picker"
-                style={{ backgroundColor: colorValue, cursor: "pointer" }}
-              ></div>
-            </Popover.Target>
-          </Tooltip>
-          <Popover.Dropdown>
-            <ColorSelect
-              colorValue={colorValue}
-              setColorValue={setColorValue}
-            />
-          </Popover.Dropdown>
-        </Popover>
-        <input
-          readOnly
-          value={colorValue}
-          style={{ display: "none", visibility: "hidden" }}
+      <Box>
+        <LoadingOverlay
+          visible={visible}
+          zIndex={1000}
+          // overlayProps={{
+          //   backgroundOpacity: 1,
+          //   color: document.body.style.background,
+          // }}
         />
-        <div className="formGroup username">
-          <TextInput
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            name="username"
-            id="username"
-            placeholder="Enter your username..."
-            maxLength="18"
-            autoComplete="off"
-            radius={0}
-            required={true}
-          />
-        </div>
-      </Group>
-      <br />
-      <Link to="..">
-        <Center>
-          <Text>Back</Text>
-        </Center>
-      </Link>
+        <Group justify="center">
+          <Popover
+            onOpen={() => {
+              setisTooltipVisible(false);
+            }}
+            position="left"
+            trapFocus
+            withArrow
+          >
+            <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
+              <Popover.Target>
+                <div
+                  className="user-color-picker"
+                  style={{ backgroundColor: colorValue, cursor: "pointer" }}
+                ></div>
+              </Popover.Target>
+            </Tooltip>
+            <Popover.Dropdown>
+              <ColorSelect
+                colorValue={colorValue}
+                setColorValue={setColorValue}
+              />
+            </Popover.Dropdown>
+          </Popover>
+          <form onSubmit={verifyRoomCode}>
+            <Group justify="center">
+              <input
+                readOnly
+                value={colorValue}
+                style={{ display: "none", visibility: "hidden" }}
+              />
+              <div className="formGroup username">
+                <TextInput
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  name="username"
+                  id="username"
+                  placeholder="Enter your username..."
+                  maxLength="18"
+                  autoComplete="off"
+                  radius={0}
+                  required={true}
+                />
+              </div>
+              <Button type="submit">Submit</Button>
+            </Group>
+          </form>
+        </Group>
+        <br />
+        <Link to="..">
+          <Center>
+            <Text>Back</Text>
+          </Center>
+        </Link>
+      </Box>
     </>
   );
 }

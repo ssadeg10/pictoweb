@@ -28,9 +28,8 @@ body {
 }
 
 .user-color-picker {
-  width: 34px;
-  height: 34px;
-  margin: 0 0.5em 3px 0;
+  width: 35px;
+  height: 35px;
   vertical-align: middle;
   display: inline-block;
 

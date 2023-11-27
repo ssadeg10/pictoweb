@@ -60,7 +60,9 @@ function Chatroom() {
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
           <Group className="header">
-            <img className="logo" src="/assets/picto.svg" alt="logo" />
+            <a href="/">
+              <img className="logo" src="/assets/picto.svg" alt="logo" />
+            </a>
           </Group>
         </AppShellHeader>
         <AppShellMain>
