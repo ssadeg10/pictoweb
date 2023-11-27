@@ -21,9 +21,17 @@ function UserSetup() {
   const [isTooltipVisible, setisTooltipVisible] = useState(true);
   const [visible, visibilityHandler] = useDisclosure(false);
 
-  function verifyRoomCode(e) {
-    e.preventDefault();
+  function requestNewRoom() {
     visibilityHandler.open();
+  }
+
+  function checkInputs(e) {
+    e.preventDefault();
+    if (colorValue == "#fff" || username == "" || username == undefined) {
+      return;
+    } else {
+      requestNewRoom();
+    }
   }
 
   return (
@@ -61,7 +69,7 @@ function UserSetup() {
               />
             </Popover.Dropdown>
           </Popover>
-          <form onSubmit={verifyRoomCode}>
+          <form onSubmit={checkInputs}>
             <Group justify="center">
               <input
                 readOnly
@@ -72,7 +80,9 @@ function UserSetup() {
                 <TextInput
                   type="text"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => {
+                    setUsername(e.currentTarget.value);
+                  }}
                   name="username"
                   id="username"
                   placeholder="Enter your username..."
@@ -87,11 +97,11 @@ function UserSetup() {
           </form>
         </Group>
         <br />
-        <Link to="..">
-          <Center>
+        <Center>
+          <Link to="..">
             <Text>Back</Text>
-          </Center>
-        </Link>
+          </Link>
+        </Center>
       </Box>
     </>
   );

@@ -8,13 +8,16 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 function JoinRoom() {
   const [visible, visibilityHandler] = useDisclosure(false);
+  const [roomId, setRoomId] = useState(undefined);
 
   function verifyRoomCode(e) {
     e.preventDefault();
+    if (roomId == undefined || roomId == "") return;
     visibilityHandler.open();
   }
   return (
@@ -37,16 +40,20 @@ function JoinRoom() {
               autoComplete="off"
               radius={0}
               required={true}
+              value={roomId}
+              onChange={(e) => {
+                setRoomId(e.currentTarget.value);
+              }}
             />
             <Button type="submit">Submit</Button>
           </Group>
         </form>
         <br />
-        <Link to="..">
-          <Center>
+        <Center>
+          <Link to="..">
             <Text>Back</Text>
-          </Center>
-        </Link>
+          </Link>
+        </Center>
       </Box>
     </>
   );
