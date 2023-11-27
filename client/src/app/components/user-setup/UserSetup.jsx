@@ -12,14 +12,26 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function UserSetup() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
-  const [isTooltipVisible, setisTooltipVisible] = useState(true);
+  const [isTooltipVisible, setisTooltipVisible] = useState(false);
   const [visible, visibilityHandler] = useDisclosure(false);
+
+  let runOnce = false;
+
+  useEffect(() => {
+    if (!runOnce) {
+      runOnce = true;
+
+      setTimeout(() => {
+        setisTooltipVisible(true);
+      }, 500);
+    }
+  }, []);
 
   function requestNewRoom() {
     visibilityHandler.open();
@@ -98,7 +110,7 @@ function UserSetup() {
         </Group>
         <br />
         <Center>
-          <Link to=".." className="link">
+          <Link to=".." className="link disableSelect" draggable="false">
             <Text>Back</Text>
           </Link>
         </Center>

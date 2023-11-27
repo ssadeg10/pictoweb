@@ -55,6 +55,10 @@ body {
   color: initial;
 }
 
+.disableSelect {
+  user-select: none;
+}
+
 .mantine-ColorSwatch-childrenOverlay {
   border: 2px solid black;
   border-radius: 0;

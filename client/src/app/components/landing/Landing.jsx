@@ -17,11 +17,13 @@ function Landing() {
   const variants = {
     initialVar: {
       opacity: 0,
-      x: -10,
+      // x: -30,
+      transform: "translateX(-30px)",
     },
     inVar: {
       opacity: 1,
-      x: 0,
+      // x: 0,
+      transform: "translateX(0px)",
     },
     // outVar: {
     //   opacity: 0,
@@ -39,7 +41,12 @@ function Landing() {
     <>
       <div id="containerMain">
         <motion.div transition={transition} layout>
-          <img id="logo" src={logo} />
+          <img
+            id="logo"
+            className="disableSelect"
+            src={logo}
+            draggable="false"
+          />
         </motion.div>
         <br />
         <br />
@@ -56,7 +63,9 @@ function Landing() {
         </main>
         <br />
         <motion.div transition={transition} layout>
-          <p className="version">version {import.meta.env.VITE_APP_VERSION}</p>
+          <p className="version disableSelect">
+            version {import.meta.env.VITE_APP_VERSION}
+          </p>
         </motion.div>
       </div>
       <ActionIcon

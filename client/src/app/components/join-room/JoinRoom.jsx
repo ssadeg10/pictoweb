@@ -50,7 +50,7 @@ function JoinRoom() {
         </form>
         <br />
         <Center>
-          <Link to=".." className="link">
+          <Link to=".." className="link disableSelect" draggable="false">
             <Text>Back</Text>
           </Link>
         </Center>
