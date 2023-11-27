@@ -1,13 +1,17 @@
 import {
   Box,
+  Button,
+  Center,
   ColorPicker,
   DEFAULT_THEME,
   Group,
   Popover,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function UserSetup() {
   const [username, setUsername] = useState("");
@@ -15,47 +19,58 @@ function UserSetup() {
   const [isTooltipVisible, setisTooltipVisible] = useState(true);
 
   return (
-    <Group justify="center">
-      <Popover
-        onOpen={() => {
-          setisTooltipVisible(false);
-        }}
-        position="left"
-        trapFocus
-        withArrow
-      >
-        <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
-          <Popover.Target>
-            <div
-              className="user-color-picker"
-              style={{ backgroundColor: colorValue, cursor: "pointer" }}
-            ></div>
-          </Popover.Target>
-        </Tooltip>
-        <Popover.Dropdown>
-          <ColorSelect colorValue={colorValue} setColorValue={setColorValue} />
-        </Popover.Dropdown>
-      </Popover>
-      <input
-        readOnly
-        value={colorValue}
-        style={{ display: "none", visibility: "hidden" }}
-      />
-      <div className="formGroup username">
-        <TextInput
-          type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          name="username"
-          id="username"
-          placeholder="Enter your username..."
-          maxLength="18"
-          autoComplete="off"
-          radius={0}
-          required={true}
+    <>
+      <Group justify="center">
+        <Popover
+          onOpen={() => {
+            setisTooltipVisible(false);
+          }}
+          position="left"
+          trapFocus
+          withArrow
+        >
+          <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
+            <Popover.Target>
+              <div
+                className="user-color-picker"
+                style={{ backgroundColor: colorValue, cursor: "pointer" }}
+              ></div>
+            </Popover.Target>
+          </Tooltip>
+          <Popover.Dropdown>
+            <ColorSelect
+              colorValue={colorValue}
+              setColorValue={setColorValue}
+            />
+          </Popover.Dropdown>
+        </Popover>
+        <input
+          readOnly
+          value={colorValue}
+          style={{ display: "none", visibility: "hidden" }}
         />
-      </div>
-    </Group>
+        <div className="formGroup username">
+          <TextInput
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            name="username"
+            id="username"
+            placeholder="Enter your username..."
+            maxLength="18"
+            autoComplete="off"
+            radius={0}
+            required={true}
+          />
+        </div>
+      </Group>
+      <br />
+      <Link to="..">
+        <Center>
+          <Text>Back</Text>
+        </Center>
+      </Link>
+    </>
   );
 }
 export default UserSetup;
