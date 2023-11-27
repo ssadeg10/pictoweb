@@ -98,7 +98,7 @@ function UserSetup() {
         </Group>
         <br />
         <Center>
-          <Link to="..">
+          <Link to=".." className="link">
             <Text>Back</Text>
           </Link>
         </Center>

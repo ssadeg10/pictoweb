@@ -46,17 +46,13 @@ body {
   display: inline-block;
 }
 
-.swatches {
-  /* padding: 0 1.2em; */
-}
-
-/* @keyframes swatches {
-  animation-duration: 0.5s;
-} */
-
 .swatch {
   height: 2em;
   width: 4em;
+}
+
+.link {
+  color: initial;
 }
 
 .mantine-ColorSwatch-childrenOverlay {
