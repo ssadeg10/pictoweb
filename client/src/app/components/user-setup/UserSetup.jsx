@@ -69,7 +69,12 @@ function UserSetup() {
             trapFocus
             withArrow
           >
-            <Tooltip label="Click me!" withArrow opened={isTooltipVisible}>
+            <Tooltip
+              label="Click me!"
+              withArrow
+              opened={isTooltipVisible}
+              transitionProps={{ transition: "fade", duration: 100 }}
+            >
               <Popover.Target>
                 <div
                   className="user-color-picker"
