@@ -17,13 +17,11 @@ function Landing() {
   const variants = {
     initialVar: {
       opacity: 0,
-      // x: -30,
-      transform: "translateX(-30px)",
+      x: -15,
     },
     inVar: {
       opacity: 1,
-      // x: 0,
-      transform: "translateX(0px)",
+      x: 0,
     },
     // outVar: {
     //   opacity: 0,

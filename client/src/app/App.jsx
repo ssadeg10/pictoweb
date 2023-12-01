@@ -25,6 +25,7 @@ function App() {
           path: "/join",
           element: <JoinRoom />,
         },
+        { path: "/join/:roomCode", element: <UserSetup /> },
       ],
     },
     {

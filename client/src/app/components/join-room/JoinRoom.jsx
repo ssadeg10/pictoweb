@@ -9,17 +9,42 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { verifyRoomCode } from "../../api/verifyRoomCode";
 
 function JoinRoom() {
   const [visible, visibilityHandler] = useDisclosure(false);
-  const [roomId, setRoomId] = useState(undefined);
+  const [roomId, setRoomId] = useState("");
+  const [errorText, setErrorText] = useState("");
+  const navigate = useNavigate();
 
-  function verifyRoomCode(e) {
+  function formSubmitHandler(e) {
     e.preventDefault();
-    if (roomId == undefined || roomId == "") return;
+    if (roomId == "" || roomId == undefined) return;
+    if (!isValidString(roomId)) {
+      setErrorText("Code contains invalid characters");
+      return;
+    }
     visibilityHandler.open();
+    const valid = verifyRoomCode(roomId);
+    if (!valid) {
+      setErrorText("Invalid room code");
+      visibilityHandler.close();
+      return;
+    }
+
+    // TODO: use redirect() and have server deliver new location with data
+    // https://stackoverflow.com/a/76049219
+    navigate(`/join/${roomId}`);
   }
+
+  function isValidString(inputString) {
+    // allowed characters
+    var pattern = /^[0-9a-fA-F]+$/;
+
+    return pattern.test(inputString);
+  }
+
   return (
     <>
       <Box>
@@ -31,7 +56,7 @@ function JoinRoom() {
           //   color: document.body.style.background,
           // }}
         />
-        <form onSubmit={verifyRoomCode}>
+        <form onSubmit={formSubmitHandler}>
           <Group justify="center">
             <TextInput
               className="formGroup text-input"
@@ -43,7 +68,9 @@ function JoinRoom() {
               value={roomId}
               onChange={(e) => {
                 setRoomId(e.currentTarget.value);
+                setErrorText("");
               }}
+              error={errorText !== "" ? errorText : false}
             />
             <Button type="submit">Submit</Button>
           </Group>
