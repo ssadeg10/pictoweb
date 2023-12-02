@@ -26,16 +26,17 @@ function JoinRoom() {
       return;
     }
     visibilityHandler.open();
-    const valid = verifyRoomCode(roomId);
-    if (!valid) {
-      setErrorText("Invalid room code");
-      visibilityHandler.close();
-      return;
-    }
+    verifyRoomCode(roomId).then((error) => {
+      if (error && error.status == 404) {
+        setErrorText("Invalid room code");
+        visibilityHandler.close();
+        return;
+      }
 
-    // TODO: use redirect() and have server deliver new location with data
-    // https://stackoverflow.com/a/76049219
-    navigate(`/join/${roomId}`);
+      // TODO: use redirect() and have server deliver new location with data
+      // https://stackoverflow.com/a/76049219
+      navigate(`/join/${roomId}`);
+    });
   }
 
   function isValidString(inputString) {

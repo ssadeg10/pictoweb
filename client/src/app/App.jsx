@@ -6,12 +6,16 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import LandingActionSelect from "./components/landing-action-select/LandingActionSelect";
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
+import ErrorPage from "./components/error-page/errorPage";
+import { userSetupLoader } from "./components/user-setup/userSetupLoader";
+import { verifyRoomCode } from "./api/verifyRoomCode";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
       element: <Landing />,
+      errorElement: <ErrorPage />,
       children: [
         {
           path: "/",
@@ -25,7 +29,14 @@ function App() {
           path: "/join",
           element: <JoinRoom />,
         },
-        { path: "/join/:roomCode", element: <UserSetup /> },
+        {
+          path: "/join/:roomCode",
+          loader: ({ params }) => {
+            let roomCode = params.roomCode;
+            return userSetupLoader(roomCode);
+          },
+          element: <UserSetup />,
+        },
       ],
     },
     {
