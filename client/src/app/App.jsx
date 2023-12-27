@@ -30,9 +30,10 @@ function App() {
         },
         {
           path: "/join/:roomCode",
-          loader: ({ params }) => {
-            let roomCode = params.roomCode;
-            return userSetupLoader(roomCode);
+          loader: async ({ params }) => {
+            const roomCode = params.roomCode;
+            await userSetupLoader(roomCode);
+            return null; // TODO: will need to pass room code to server and check existance
           },
           element: <UserSetup />,
         },
