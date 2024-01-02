@@ -7,7 +7,7 @@ export default function ErrorPage() {
   let displayError = undefined;
 
   if (error.status && error.statusText) {
-    displayError = `${error.status}`.concat(" ", `${error.statusText}`);
+    displayError = `${error.status}: ` + `${error.statusText}`;
   } else if (error) {
     const maxLength = 75;
     const string = `${error}`;
@@ -22,7 +22,7 @@ export default function ErrorPage() {
       <div>
         <img id="logo" className="disableSelect" src={logo} draggable="false" />
       </div>
-      <h1>oof</h1>
+      <h1>Oof</h1>
       <p>Sorry, an unexpected error has occurred.</p>
       <p>
         <i>{displayError}</i>

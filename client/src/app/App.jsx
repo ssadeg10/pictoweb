@@ -7,7 +7,8 @@ import LandingActionSelect from "./components/landing-action-select/LandingActio
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
 import ErrorPage from "./components/error-page/errorPage";
-import { userSetupLoader } from "./components/user-setup/userSetupLoader";
+// import { userSetupLoader } from "./components/user-setup/userSetupLoader";
+import { verifyRoomCode } from "./api/verifyRoomCode";
 
 function App() {
   const router = createBrowserRouter([
@@ -32,8 +33,17 @@ function App() {
           path: "/join/:roomCode",
           loader: async ({ params }) => {
             const roomCode = params.roomCode;
-            await userSetupLoader(roomCode);
-            return null; // TODO: will need to pass room code to server and check existance
+            const response = await verifyRoomCode(roomCode);
+
+            if (response.error) {
+              throw new Response("", {
+                status: response.status,
+                statusText: response.message,
+              });
+            }
+
+            return response;
+            // TODO: will need to pass room code to server and check existance
           },
           element: <UserSetup />,
         },

@@ -1,3 +1,5 @@
+import GenericResponse from "../models/GenericResponse";
+
 export async function verifyRoomCode(roomCode) {
   const url = "http://localhost:8080/test";
   const controller = new AbortController();
@@ -9,26 +11,27 @@ export async function verifyRoomCode(roomCode) {
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-      // return {
-      //   error: true,
-      //   status: response.status,
-      //   statusText: response.statusText,
-      // };
+      console.error("HTTP error:", response.status);
+      return new GenericResponse(true, response.status, response.statusText);
     }
-    return await response.text();
+
+    const plainText = response.text();
+    // const json = response.json();
+
+    //   return new GenericResponse(undefined, undefined, undefined, json);
+    return new GenericResponse(undefined, undefined, undefined, plainText);
   } catch (error) {
     console.error("Error verifying room code:", error.message);
-    let returnValue = "Unable to verify room code";
+    let returnMessage = "Unable to verify room code";
 
     if (
       `${error.message}`.includes("NetworkError") ||
       error.name === "TimeoutError"
     ) {
-      returnValue = "Cannot verify room code, unable to reach server";
+      returnMessage = "Cannot verify room code, unable to reach server";
     }
-    // return returnValue;
-    throw (returnValue, error);
+
+    return new GenericResponse(true, 500, returnMessage);
   } finally {
     clearTimeout(timeoutId);
   }
