@@ -17,7 +17,7 @@ function DrawCanvas(props) {
     };
     const undoStack = [];
     const redoStack = [];
-    const MAX_STACK_LENGTH = 10;
+    const MAX_STACK_LENGTH = 30;
     const MIN_UNDO_STACK_LENGTH = 2;
     const MIN_REDO_STACK_LENGTH = 1;
 
