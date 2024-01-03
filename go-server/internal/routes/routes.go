@@ -41,15 +41,14 @@ func validateRoomHandler(w http.ResponseWriter, r *http.Request) {
 			Error:   false,
 			Message: roomId,
 		}
-		w.WriteHeader(http.StatusOK)
 	} else {
 		response = genericResponse{
 			Error:   true,
 			Message: "Invalid roomId",
 		}
-		w.WriteHeader(http.StatusBadRequest)
 	}
 
+	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(response)
 }

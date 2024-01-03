@@ -9,14 +9,14 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { verifyRoomCode } from "../../api/verifyRoomCode";
+import { Link, useNavigate, useNavigation } from "react-router-dom";
 
 function JoinRoom() {
   const [visible, visibilityHandler] = useDisclosure(false);
   const [roomId, setRoomId] = useState("");
   const [errorText, setErrorText] = useState("");
   const navigate = useNavigate();
+  const navigation = useNavigation();
 
   function formSubmitHandler(e) {
     e.preventDefault();
@@ -26,17 +26,16 @@ function JoinRoom() {
       return;
     }
     visibilityHandler.open();
-    verifyRoomCode(roomId).then((error) => {
-      if (error && error.status == 404) {
+    navigate(`/join/${roomId}`);
+
+    // if redirected from /join/{roomId}, roomId is invalid
+    if (navigation.state != "loading") {
+      setTimeout(() => {
         setErrorText("Invalid room code");
         visibilityHandler.close();
         return;
-      }
-
-      // TODO: use redirect() and have server deliver new location with data
-      // https://stackoverflow.com/a/76049219
-      navigate(`/join/${roomId}`);
-    });
+      }, 100);
+    }
   }
 
   function isValidString(inputString) {

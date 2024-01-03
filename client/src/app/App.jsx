@@ -2,7 +2,11 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import Landing from "./components/landing/Landing";
 import Chatroom from "./components/chatroom/Chatroom";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
 import LandingActionSelect from "./components/landing-action-select/LandingActionSelect";
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
@@ -36,10 +40,17 @@ function App() {
             const response = await verifyRoomCode(roomCode);
 
             if (response.error) {
-              throw new Response("", {
-                status: response.status,
-                statusText: response.message,
-              });
+              throw response.status
+                ? new Response("", {
+                    status: response.status,
+                    statusText: response.message,
+                  })
+                : `${response.message}`;
+            }
+
+            const data = response.data;
+            if (data.error) {
+              return redirect("/join");
             }
 
             return response;
