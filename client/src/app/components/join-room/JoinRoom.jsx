@@ -48,14 +48,7 @@ function JoinRoom() {
   return (
     <>
       <Box>
-        <LoadingOverlay
-          visible={visible}
-          zIndex={1000}
-          // overlayProps={{
-          //   backgroundOpacity: 1,
-          //   color: document.body.style.background,
-          // }}
-        />
+        <LoadingOverlay visible={visible} zIndex={1000} />
         <form onSubmit={formSubmitHandler}>
           <Group justify="center">
             <TextInput

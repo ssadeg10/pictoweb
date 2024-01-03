@@ -11,7 +11,6 @@ import LandingActionSelect from "./components/landing-action-select/LandingActio
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
 import ErrorPage from "./components/error-page/errorPage";
-// import { userSetupLoader } from "./components/user-setup/userSetupLoader";
 import { verifyRoomCode } from "./api/verifyRoomCode";
 
 function App() {
