@@ -53,7 +53,6 @@ function App() {
             }
 
             return response;
-            // TODO: will need to pass room code to server and check existance
           },
           element: <UserSetup />,
         },

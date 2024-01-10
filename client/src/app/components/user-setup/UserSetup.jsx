@@ -21,11 +21,10 @@ function UserSetup() {
   const [isTooltipVisible, setisTooltipVisible] = useState(false);
   const [visible, visibilityHandler] = useDisclosure(false);
 
-  let runOnce = false;
-
   useEffect(() => {
-    if (!runOnce) {
-      runOnce = true;
+    let ranOnce = false;
+    if (!ranOnce) {
+      ranOnce = true;
 
       setTimeout(() => {
         setisTooltipVisible(true);
@@ -37,7 +36,7 @@ function UserSetup() {
     visibilityHandler.open();
   }
 
-  function checkInputs(e) {
+  function formSubmitHandler(e) {
     e.preventDefault();
     if (colorValue == "#fff") {
       setisTooltipVisible(true);
@@ -89,7 +88,7 @@ function UserSetup() {
               />
             </Popover.Dropdown>
           </Popover>
-          <form onSubmit={checkInputs}>
+          <form onSubmit={formSubmitHandler}>
             <Group justify="center">
               <input
                 readOnly
