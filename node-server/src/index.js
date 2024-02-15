@@ -19,6 +19,9 @@ app.get("/render", (req, res) => {
 
 io.on("connection", (socket) => {
   // TODO: need client script to specify the connecting room to join
+  socket.on("join", (roomId) => {
+    socket.join(roomId);
+  });
 });
 
 const PORT = process.env.PORT || 3000;

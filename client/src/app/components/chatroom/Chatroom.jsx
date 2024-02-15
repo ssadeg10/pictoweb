@@ -15,6 +15,7 @@ import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
 import { useRef, useState } from "react";
+import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
@@ -66,7 +67,11 @@ function Chatroom() {
           </Group>
         </AppShellHeader>
         <AppShellMain>
-          <div className="messagesPanel"></div>
+          <Center>
+            <div className="messagesPanel">
+              <MessagesPanel></MessagesPanel>
+            </div>
+          </Center>
         </AppShellMain>
         <AppShellFooter>
           <div className="canvasPanel">

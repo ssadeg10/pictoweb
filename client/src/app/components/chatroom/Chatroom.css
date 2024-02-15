@@ -10,8 +10,9 @@ body {
   padding: 0 1rem;
 }
 
-.messagesPanel .canvasPanel {
-  width: 100%;
+.messagesPanel {
+  max-width: max-content;
+  /* position: relative; */
 }
 
 /* Old CSS */
