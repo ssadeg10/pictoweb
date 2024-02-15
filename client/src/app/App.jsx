@@ -11,7 +11,7 @@ import LandingActionSelect from "./components/landing-action-select/LandingActio
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
 import ErrorPage from "./components/error-page/errorPage";
-import { verifyRoomCode } from "./api/verifyRoomCode";
+import { verifyRoomCode } from "./connections/verifyRoomCode";
 
 function App() {
   const router = createBrowserRouter([

@@ -1,4 +1,4 @@
-import { Box, LoadingOverlay, Stack } from "@mantine/core";
+import { Box, LoadingOverlay } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
@@ -14,16 +14,11 @@ function MessagesPanel(params) {
   return (
     <>
       <Box>
-        <LoadingOverlay visible={visible} zIndex={0} />
+        <LoadingOverlay visible={visible} zIndex={99} />
       </Box>
       <div className="messages">
-        {/* <Stack> */}
         <BaseCanvasMessage></BaseCanvasMessage>
         <BaseCanvasMessage></BaseCanvasMessage>
-        <BaseCanvasMessage></BaseCanvasMessage>
-        <BaseCanvasMessage></BaseCanvasMessage>
-        <BaseCanvasMessage></BaseCanvasMessage>
-        {/* </Stack> */}
       </div>
     </>
   );

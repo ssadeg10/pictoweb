@@ -4,9 +4,16 @@ body {
 .logo {
   height: 2.5rem;
 }
-.header {
+.header-logo {
   margin: 0;
   height: 100%;
+  padding: 0.3rem 0;
+  width: 4.5em;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+.header-group {
   padding: 0 1rem;
 }
 
@@ -146,14 +153,14 @@ body {
   background-position: center;
 } */
 
-.mantine-SegmentedControl-root .drawErase {
-  --sc-radius: var(--mantine-radius-sm);
+.mantine-SegmentedControl-root {
+  /* --sc-radius: var(--mantine-radius-sm);
   --sc-shadow: var(--mantine-shadow-xs);
   --sc-padding: var(--sc-padding-sm);
-  --sc-font-size: var(--mantine-font-size-sm);
-  --sc-color: var(--mantine-color-dark-6);
+  --sc-font-size: var(--mantine-font-size-sm); */
+  --sc-color: var(--mantine-color-violet-2);
 }
-.mantine-SegmentedControl-indicator .drawErase {
-  visibility: visible;
-  background-color: var(--mantine-color-dark-6);
-}
+/* .mantine-SegmentedControl-indicator,
+.drawErase {
+  background-color: var(--mantine-color-green-1);
+} */

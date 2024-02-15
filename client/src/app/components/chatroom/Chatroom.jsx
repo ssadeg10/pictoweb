@@ -3,6 +3,8 @@ import {
   AppShellFooter,
   AppShellHeader,
   AppShellMain,
+  Avatar,
+  Badge,
   Box,
   Button,
   Center,
@@ -14,11 +16,13 @@ import {
 import "./Chatroom.css";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import User from "../../models/User.js";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
+import { socket } from "../../connections/socket.js";
 
 function Chatroom() {
   const user = new User("John Smith", "blue");
+  const [isConnected, setIsConnected] = useState(socket.connected);
 
   // Hooks to store child functions
   const clearRef = useRef(null);
@@ -56,14 +60,46 @@ function Chatroom() {
     }
   };
 
+  useEffect(() => {
+    function onConnect() {
+      setIsConnected(true);
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    // start websocket connection
+    socket.connect();
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.disconnect();
+    };
+  });
+
   return (
     <>
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
-          <Group className="header">
-            <a href="/">
-              <img className="logo" src="/assets/picto.svg" alt="logo" />
-            </a>
+          <Group justify="space-between" className="header-group">
+            <div className="header-logo">
+              <a href="/" style={{ paddingTop: "5px" }}>
+                <img className="logo" src="/assets/picto.svg" alt="logo" />
+              </a>
+            </div>
+            <Group justify="flex-end">
+              {isConnected ? (
+                <Badge color="green">Connected</Badge>
+              ) : (
+                <Badge color="red">Disconnected</Badge>
+              )}
+              <Avatar src="avatar.png" alt="connected users" size="md"></Avatar>
+            </Group>
           </Group>
         </AppShellHeader>
         <AppShellMain>
