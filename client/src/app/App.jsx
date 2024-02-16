@@ -25,6 +25,10 @@ function App() {
           element: <LandingActionSelect />,
         },
         {
+          path: "/test",
+          element: <UserSetup />,
+        },
+        {
           path: "/create",
           element: <UserSetup />,
         },

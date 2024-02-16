@@ -93,6 +93,15 @@ function Chatroom() {
       <LoadingOverlay
         visible={visible}
         transitionProps={{ transition: "fade", duration: 400 }}
+        overlayProps={{ blur: 2 }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+        }}
       />
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
