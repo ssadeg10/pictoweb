@@ -9,6 +9,7 @@ import {
   Button,
   Center,
   Group,
+  LoadingOverlay,
   SegmentedControl,
   Slider,
   Text,
@@ -19,10 +20,14 @@ import User from "../../models/User.js";
 import { useEffect, useRef, useState } from "react";
 import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import { socket } from "../../connections/socket.js";
+import { useLocation } from "react-router-dom";
+import { useDisclosure } from "@mantine/hooks";
 
 function Chatroom() {
-  const user = new User("John Smith", "blue");
   const [isConnected, setIsConnected] = useState(socket.connected);
+  const [visible, visibilityHandler] = useDisclosure(true);
+  const location = useLocation();
+  const user = new User(location.state.username, location.state.color);
 
   // Hooks to store child functions
   const clearRef = useRef(null);
@@ -63,6 +68,7 @@ function Chatroom() {
   useEffect(() => {
     function onConnect() {
       setIsConnected(true);
+      visibilityHandler.close();
     }
 
     function onDisconnect() {
@@ -84,6 +90,10 @@ function Chatroom() {
 
   return (
     <>
+      <LoadingOverlay
+        visible={visible}
+        transitionProps={{ transition: "fade", duration: 400 }}
+      />
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
           <Group justify="space-between" className="header-group">
@@ -98,7 +108,7 @@ function Chatroom() {
               ) : (
                 <Badge color="red">Disconnected</Badge>
               )}
-              <Avatar src="avatar.png" alt="connected users" size="md"></Avatar>
+              <Avatar src={null} alt="connected users" size="md"></Avatar>
             </Group>
           </Group>
         </AppShellHeader>
@@ -116,6 +126,7 @@ function Chatroom() {
                 <SegmentedControl
                   className="drawErase"
                   orientation="vertical"
+                  color={user.userColor}
                   onChange={(newValue) => {
                     handleButtonDrawErase(newValue);
                   }}
@@ -149,7 +160,10 @@ function Chatroom() {
                   ]}
                 />
                 <div id="sliderContainer">
-                  <LineWidthSlider width={handleButtonLineWidth} />
+                  <LineWidthSlider
+                    width={handleButtonLineWidth}
+                    color={user.userColor}
+                  />
                 </div>
               </div>
               <div>
@@ -201,7 +215,6 @@ export default Chatroom;
 
 const LineWidthSlider = (props) => {
   const [lineWidthValue, setLineWidthValue] = useState(5);
-  // const [lineWidthEndValue, setLineWidthEndValue] = useState(5);
 
   const handleSliderChange = (newValue) => {
     setLineWidthValue(newValue);
@@ -213,7 +226,7 @@ const LineWidthSlider = (props) => {
       <Slider
         value={lineWidthValue}
         thumbSize={(lineWidthValue + 30) / 2}
-        color="gray"
+        color={props.color ? props.color : "gray"}
         onChange={setLineWidthValue}
         onChangeEnd={handleSliderChange}
         min={1}

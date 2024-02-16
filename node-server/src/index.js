@@ -27,9 +27,14 @@ app.get("/render", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log(`user connected: ${socket.id}`);
+
   // TODO: need client script to specify the connecting room to join
   socket.on("join", (roomId) => {
     socket.join(roomId);
+  });
+
+  socket.on("disconnect", (reason) => {
+    console.log(`user disconnected: ${socket.id}`);
   });
 });
 
