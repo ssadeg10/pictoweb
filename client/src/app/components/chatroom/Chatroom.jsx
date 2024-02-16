@@ -14,20 +14,26 @@ import {
   Slider,
   Text,
 } from "@mantine/core";
-import "./Chatroom.css";
-import DrawCanvas from "../draw-canvas/DrawCanvas";
-import User from "../../models/User.js";
-import { useEffect, useRef, useState } from "react";
-import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
-import { socket } from "../../connections/socket.js";
-import { useLocation } from "react-router-dom";
 import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { socket } from "../../connections/socket.js";
+import User from "../../models/User.js";
+import DrawCanvas from "../draw-canvas/DrawCanvas";
+import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
+import "./Chatroom.css";
+import ClearIconComponent from "/public/components/ClearIconComponent.jsx";
+import DownIconComponent from "/public/components/DownIconComponent.jsx";
+import EraserIconComponent from "/public/components/EraserIconComponent.jsx";
+import PencilIconComponent from "/public/components/PencilIconComponent.jsx";
+import PictoLogoComponent from "/public/components/PictoLogoComponent.jsx";
+import UpIconComponent from "/public/components/UpIconComponent.jsx";
 
 function Chatroom() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [visible, visibilityHandler] = useDisclosure(true);
   const location = useLocation();
-  const user = new User(location.state.username, location.state.color);
+  const user = new User(location.state?.username, location.state?.color);
 
   // Hooks to store child functions
   const clearRef = useRef(null);
@@ -66,13 +72,18 @@ function Chatroom() {
   };
 
   useEffect(() => {
-    function onConnect() {
+    async function onConnect() {
       setIsConnected(true);
+      await loadMessagesState();
       visibilityHandler.close();
     }
 
     function onDisconnect() {
       setIsConnected(false);
+    }
+
+    async function loadMessagesState() {
+      // TODO: check for MessagesPanel state to finish loading
     }
 
     // start websocket connection
@@ -108,7 +119,7 @@ function Chatroom() {
           <Group justify="space-between" className="header-group">
             <div className="header-logo">
               <a href="/" style={{ paddingTop: "5px" }}>
-                <img className="logo" src="/assets/picto.svg" alt="logo" />
+                <PictoLogoComponent className="logo" />
               </a>
             </div>
             <Group justify="flex-end">
@@ -144,11 +155,7 @@ function Chatroom() {
                       value: "false",
                       label: (
                         <Center>
-                          <img
-                            src="/assets/pencil.svg"
-                            alt="pencil icon"
-                            width={25}
-                          />
+                          <PencilIconComponent width={25} />
                           <Box ml={10}>Draw</Box>
                         </Center>
                       ),
@@ -157,11 +164,7 @@ function Chatroom() {
                       value: "true",
                       label: (
                         <Center>
-                          <img
-                            src="/assets/eraser.svg"
-                            alt="pencil icon"
-                            width={25}
-                          />
+                          <EraserIconComponent width={25} />
                           <Box ml={10}>Erase</Box>
                         </Center>
                       ),
@@ -190,15 +193,21 @@ function Chatroom() {
               </div>
               <div id="containerMssgPanel">
                 <Button.Group orientation="vertical">
-                  <Button id="send" title="Send" variant="light" color="grey">
-                    <img src="/assets/up.svg" alt="send message" width={25} />
+                  <Button
+                    id="send"
+                    title="Send"
+                    variant="light"
+                    color={user.userColor}
+                  >
+                    <UpIconComponent width={25} />
                   </Button>
-                  <Button id="clone" title="Clone" variant="light" color="grey">
-                    <img
-                      src="/assets/down.svg"
-                      alt="clone last chatroom message"
-                      width={25}
-                    />
+                  <Button
+                    id="clone"
+                    title="Clone"
+                    variant="light"
+                    color={user.userColor}
+                  >
+                    <DownIconComponent width={25} />
                   </Button>
                 </Button.Group>
               </div>
@@ -207,10 +216,10 @@ function Chatroom() {
                   id="clear"
                   title="Clear"
                   variant="light"
-                  color="grey"
+                  color={user.userColor}
                   onClick={handleButtonClear}
                 >
-                  <img src="/assets/clear.svg" alt="clear canvas" width={25} />
+                  <ClearIconComponent width={25} />
                 </Button>
               </div>
             </div>
