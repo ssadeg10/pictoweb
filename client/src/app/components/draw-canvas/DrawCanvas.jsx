@@ -1,6 +1,6 @@
+import { getHotkeyHandler } from "@mantine/hooks";
 import { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
-import { getHotkeyHandler } from "@mantine/hooks";
 
 function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
@@ -174,10 +174,15 @@ function DrawCanvas(props) {
       img.src = blobURL;
     }
 
+    function getDataURLFromCanvas() {
+      return canvas.toDataURL("image/webp", 1.0);
+    }
+
     // Passes the child function to the parent which assigns to a hook
     props.onSetClearRef(recordClear);
     props.onSetDrawEraseRef(erase);
     props.onSetLineWidthRef(lineWidth);
+    props.onGetDataURLRef(getDataURLFromCanvas);
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);

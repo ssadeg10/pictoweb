@@ -19,26 +19,34 @@ import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { socket } from "../../connections/socket.js";
 import User from "../../models/User.js";
+import { userMessage } from "../../models/UserMessage.js";
+import {
+  ClearIconComponent,
+  DownIconComponent,
+  EraserIconComponent,
+  PencilIconComponent,
+  PictoLogoComponent,
+  UpIconComponent,
+} from "../_icons/IconComponents.jsx";
 import DrawCanvas from "../draw-canvas/DrawCanvas";
 import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import "./Chatroom.css";
-import ClearIconComponent from "/public/components/ClearIconComponent.jsx";
-import DownIconComponent from "/public/components/DownIconComponent.jsx";
-import EraserIconComponent from "/public/components/EraserIconComponent.jsx";
-import PencilIconComponent from "/public/components/PencilIconComponent.jsx";
-import PictoLogoComponent from "/public/components/PictoLogoComponent.jsx";
-import UpIconComponent from "/public/components/UpIconComponent.jsx";
 
 function Chatroom() {
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [visible, visibilityHandler] = useDisclosure(true);
   const location = useLocation();
+
+  // Create user, assign user to message object model
   const user = new User(location.state?.username, location.state?.color);
+  const userMessageObj = userMessage;
+  userMessageObj.user = user;
 
   // Hooks to store child functions
   const clearRef = useRef(null);
   const drawEraseRef = useRef(null);
   const lineWidthRef = useRef(null);
+  const getDataURLRef = useRef(null);
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
@@ -71,7 +79,19 @@ function Chatroom() {
     }
   };
 
+  const handleButtonSend = () => {
+    userMessageObj.message.image = getDataURLRef.current(); // base64
+    socket.emit("sendMessage", userMessageObj);
+  };
+
   useEffect(() => {
+    // start websocket connection
+    socket.connect();
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("receiveMessage", (data) => onReceiveMessage(data));
+
     async function onConnect() {
       setIsConnected(true);
       await loadMessagesState();
@@ -82,19 +102,22 @@ function Chatroom() {
       setIsConnected(false);
     }
 
+    function onReceiveMessage(data) {
+      console.log(data);
+    }
+
     async function loadMessagesState() {
       // TODO: check for MessagesPanel state to finish loading
     }
 
-    // start websocket connection
-    socket.connect();
-
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
+    // function sendMessage(userMessage) {
+    //   socket.emit("message", userMessage);
+    // }
 
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("receiveMessage", (data) => onReceiveMessage(data));
       socket.disconnect();
     };
   });
@@ -189,6 +212,9 @@ function Chatroom() {
                   onSetLineWidthRef={(lineWidthFunc) =>
                     (lineWidthRef.current = lineWidthFunc)
                   }
+                  onGetDataURLRef={(dataURLFunc) =>
+                    (getDataURLRef.current = dataURLFunc)
+                  }
                 />
               </div>
               <div id="containerMssgPanel">
@@ -198,6 +224,7 @@ function Chatroom() {
                     title="Send"
                     variant="light"
                     color={user.userColor}
+                    onClick={handleButtonSend}
                   >
                     <UpIconComponent width={25} />
                   </Button>

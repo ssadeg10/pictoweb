@@ -1,5 +1,6 @@
 import { DEFAULT_THEME } from "@mantine/core";
 
+// Color hex values are from DEFAULT_THEME.colors.<color>[7]
 const colorMap = new Map();
 colorMap.set("#495057", DEFAULT_THEME.colors.gray);
 colorMap.set("#f03e3e", DEFAULT_THEME.colors.red);

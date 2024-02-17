@@ -1,5 +1,5 @@
 class User {
-  constructor(username, userColor) {
+  constructor(username = "none", userColor = "#495057") {
     this.username = username;
     this.userColor = userColor;
   }
