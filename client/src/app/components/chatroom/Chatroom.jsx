@@ -100,6 +100,12 @@ function Chatroom() {
     // start websocket connection
     socket.connect();
 
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
     socket.on("userNowEntering", (username) => onNowEntering(username));
@@ -141,6 +147,7 @@ function Chatroom() {
     }
 
     function onReceiveMessage(data) {
+      console.log(...messageData);
       setMessageData([...messageData, data]);
     }
 
@@ -154,9 +161,8 @@ function Chatroom() {
       socket.off("nowEntering", (username) => onNowEntering(username));
       socket.off("nowLeaving", (username) => onNowLeaving(username));
       socket.off("receiveMessage", (data) => onReceiveMessage(data));
-      socket.disconnect();
     };
-  }, []);
+  }, [messageData, user.username, visibilityHandler]);
 
   return (
     <>
