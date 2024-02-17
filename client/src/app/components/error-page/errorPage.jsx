@@ -1,6 +1,6 @@
-import { useLinkClickHandler, useRouteError } from "react-router-dom";
-import logo from "/assets/picto.svg";
 import { Button } from "@mantine/core";
+import { useLinkClickHandler, useRouteError } from "react-router-dom";
+import { PictoLogoLargeComponent } from "../_icons/IconComponents";
 
 export default function ErrorPage() {
   const error = useRouteError();
@@ -20,7 +20,7 @@ export default function ErrorPage() {
   return (
     <div id="error-page">
       <div>
-        <img id="logo" className="disableSelect" src={logo} draggable="false" />
+        <PictoLogoLargeComponent />
       </div>
       <h1>Oof</h1>
       <p>Sorry, an unexpected error has occurred.</p>
