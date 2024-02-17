@@ -13,40 +13,43 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, redirect, useNavigate } from "react-router-dom";
 
 function UserSetup() {
   const [username, setUsername] = useState("");
   const [colorValue, setColorValue] = useState("#fff");
-  const [isTooltipVisible, setisTooltipVisible] = useState(false);
+  const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [visible, visibilityHandler] = useDisclosure(false);
-
-  let runOnce = false;
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!runOnce) {
-      runOnce = true;
+    let ranOnce = false;
+    if (!ranOnce) {
+      ranOnce = true;
 
       setTimeout(() => {
-        setisTooltipVisible(true);
+        setTooltipVisible(true);
       }, 500);
     }
   }, []);
 
-  function requestNewRoom() {
-    visibilityHandler.open();
-  }
-
-  function checkInputs(e) {
+  function formSubmitHandler(e) {
     e.preventDefault();
     if (colorValue == "#fff") {
-      setisTooltipVisible(true);
+      setTooltipVisible(true);
       return;
     }
     if (username == "" || username == undefined) {
       return;
     }
     requestNewRoom();
+  }
+
+  function requestNewRoom() {
+    visibilityHandler.open();
+    navigate("/chat", {
+      state: { username: `${username}`, color: `${colorValue}` },
+    });
   }
 
   return (
@@ -63,7 +66,7 @@ function UserSetup() {
         <Group justify="center">
           <Popover
             onOpen={() => {
-              setisTooltipVisible(false);
+              setTooltipVisible(false);
             }}
             position="left"
             trapFocus
@@ -89,7 +92,7 @@ function UserSetup() {
               />
             </Popover.Dropdown>
           </Popover>
-          <form onSubmit={checkInputs}>
+          <form onSubmit={formSubmitHandler}>
             <Group justify="center">
               <input
                 readOnly
@@ -136,7 +139,7 @@ function ColorSelect({ colorValue, setColorValue }) {
   //   ["#feb588", "#e34400"], //org
   //   ["#76dff2", "#086e9a"], //blu
   // ];
-  const hueValue = 6;
+  const hueValue = 7;
   const userColors = [
     DEFAULT_THEME.colors.red[hueValue],
     DEFAULT_THEME.colors.pink[hueValue],

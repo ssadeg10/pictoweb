@@ -1,12 +1,12 @@
-import logo from "/assets/picto.svg";
-import "./Landing.css";
 import {
   ActionIcon,
-  useMantineColorScheme,
   useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
-import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Outlet, useLocation } from "react-router-dom";
+import { PictoLogoLargeComponent } from "../_icons/IconComponents";
+import "./Landing.css";
 
 function Landing() {
   const { setColorScheme } = useMantineColorScheme();
@@ -39,12 +39,7 @@ function Landing() {
     <>
       <div id="containerMain">
         <motion.div transition={transition} layout>
-          <img
-            id="logo"
-            className="disableSelect"
-            src={logo}
-            draggable="false"
-          />
+          <PictoLogoLargeComponent />
         </motion.div>
         <br />
         <br />

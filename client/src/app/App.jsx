@@ -11,7 +11,7 @@ import LandingActionSelect from "./components/landing-action-select/LandingActio
 import UserSetup from "./components/user-setup/UserSetup";
 import JoinRoom from "./components/join-room/JoinRoom";
 import ErrorPage from "./components/error-page/errorPage";
-import { verifyRoomCode } from "./api/verifyRoomCode";
+import { verifyRoomCode } from "./connections/verifyRoomCode";
 
 function App() {
   const router = createBrowserRouter([
@@ -23,6 +23,10 @@ function App() {
         {
           path: "/",
           element: <LandingActionSelect />,
+        },
+        {
+          path: "/test",
+          element: <UserSetup />,
         },
         {
           path: "/create",
@@ -53,7 +57,6 @@ function App() {
             }
 
             return response;
-            // TODO: will need to pass room code to server and check existance
           },
           element: <UserSetup />,
         },

@@ -3,26 +3,51 @@ import {
   AppShellFooter,
   AppShellHeader,
   AppShellMain,
+  Avatar,
+  Badge,
   Box,
   Button,
   Center,
   Group,
+  LoadingOverlay,
   SegmentedControl,
   Slider,
   Text,
 } from "@mantine/core";
-import "./Chatroom.css";
-import DrawCanvas from "../draw-canvas/DrawCanvas";
+import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useRef, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { socket } from "../../connections/socket.js";
 import User from "../../models/User.js";
-import { useRef, useState } from "react";
+import { userMessage } from "../../models/UserMessage.js";
+import {
+  ClearIconComponent,
+  DownIconComponent,
+  EraserIconComponent,
+  PencilIconComponent,
+  PictoLogoComponent,
+  UpIconComponent,
+} from "../_icons/IconComponents.jsx";
+import DrawCanvas from "../draw-canvas/DrawCanvas";
+import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
+import "./Chatroom.css";
 
 function Chatroom() {
-  const user = new User("John Smith", "blue");
+  const [messageData, setMessageData] = useState([]);
+  const [isConnected, setIsConnected] = useState(socket.connected);
+  const [visible, visibilityHandler] = useDisclosure(true);
+  const location = useLocation();
+
+  // Create user, assign user to message object model
+  const user = new User(location.state?.username, location.state?.color);
+  const userMessageObj = userMessage;
+  userMessageObj.user = user;
 
   // Hooks to store child functions
   const clearRef = useRef(null);
   const drawEraseRef = useRef(null);
   const lineWidthRef = useRef(null);
+  const getDataURLRef = useRef(null);
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
@@ -55,18 +80,84 @@ function Chatroom() {
     }
   };
 
+  const handleButtonSend = () => {
+    userMessageObj.message.image = getDataURLRef.current(); // base64
+    socket.emit("sendMessage", userMessageObj);
+  };
+
+  useEffect(() => {
+    // start websocket connection
+    socket.connect();
+
+    socket.on("connect", onConnect);
+    socket.on("disconnect", onDisconnect);
+    socket.on("receiveMessage", (data) => onReceiveMessage(data));
+
+    async function onConnect() {
+      setIsConnected(true);
+      await loadMessagesState();
+      visibilityHandler.close();
+    }
+
+    function onDisconnect() {
+      setIsConnected(false);
+    }
+
+    function onReceiveMessage(data) {
+      setMessageData([...messageData, data]);
+    }
+
+    async function loadMessagesState() {
+      // TODO: check for MessagesPanel state to finish loading
+    }
+
+    return () => {
+      socket.off("connect", onConnect);
+      socket.off("disconnect", onDisconnect);
+      socket.off("receiveMessage", (data) => onReceiveMessage(data));
+      socket.disconnect();
+    };
+  });
+
   return (
     <>
+      <LoadingOverlay
+        visible={visible}
+        transitionProps={{ transition: "fade", duration: 400 }}
+        overlayProps={{ blur: 2 }}
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 9999,
+        }}
+      />
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
-          <Group className="header">
-            <a href="/">
-              <img className="logo" src="/assets/picto.svg" alt="logo" />
-            </a>
+          <Group justify="space-between" className="header-group">
+            <div className="header-logo">
+              <a href="/" style={{ paddingTop: "5px" }}>
+                <PictoLogoComponent className="logo" />
+              </a>
+            </div>
+            <Group justify="flex-end">
+              {isConnected ? (
+                <Badge color="green">Connected</Badge>
+              ) : (
+                <Badge color="red">Disconnected</Badge>
+              )}
+              <Avatar src={null} alt="connected users" size="md"></Avatar>
+            </Group>
           </Group>
         </AppShellHeader>
         <AppShellMain>
-          <div className="messagesPanel"></div>
+          <Center>
+            <div className="messagesPanel">
+              <MessagesPanel messageData={messageData}></MessagesPanel>
+            </div>
+          </Center>
         </AppShellMain>
         <AppShellFooter>
           <div className="canvasPanel">
@@ -75,6 +166,7 @@ function Chatroom() {
                 <SegmentedControl
                   className="drawErase"
                   orientation="vertical"
+                  color={user.userColor}
                   onChange={(newValue) => {
                     handleButtonDrawErase(newValue);
                   }}
@@ -83,11 +175,7 @@ function Chatroom() {
                       value: "false",
                       label: (
                         <Center>
-                          <img
-                            src="/assets/pencil.svg"
-                            alt="pencil icon"
-                            width={25}
-                          />
+                          <PencilIconComponent width={25} />
                           <Box ml={10}>Draw</Box>
                         </Center>
                       ),
@@ -96,11 +184,7 @@ function Chatroom() {
                       value: "true",
                       label: (
                         <Center>
-                          <img
-                            src="/assets/eraser.svg"
-                            alt="pencil icon"
-                            width={25}
-                          />
+                          <EraserIconComponent width={25} />
                           <Box ml={10}>Erase</Box>
                         </Center>
                       ),
@@ -108,7 +192,10 @@ function Chatroom() {
                   ]}
                 />
                 <div id="sliderContainer">
-                  <LineWidthSlider width={handleButtonLineWidth} />
+                  <LineWidthSlider
+                    width={handleButtonLineWidth}
+                    color={user.userColor}
+                  />
                 </div>
               </div>
               <div>
@@ -122,19 +209,29 @@ function Chatroom() {
                   onSetLineWidthRef={(lineWidthFunc) =>
                     (lineWidthRef.current = lineWidthFunc)
                   }
+                  onGetDataURLRef={(dataURLFunc) =>
+                    (getDataURLRef.current = dataURLFunc)
+                  }
                 />
               </div>
               <div id="containerMssgPanel">
                 <Button.Group orientation="vertical">
-                  <Button id="send" title="Send" variant="light" color="grey">
-                    <img src="/assets/up.svg" alt="send message" width={25} />
+                  <Button
+                    id="send"
+                    title="Send"
+                    variant="light"
+                    color={user.userColor}
+                    onClick={handleButtonSend}
+                  >
+                    <UpIconComponent width={25} />
                   </Button>
-                  <Button id="clone" title="Clone" variant="light" color="grey">
-                    <img
-                      src="/assets/down.svg"
-                      alt="clone last chatroom message"
-                      width={25}
-                    />
+                  <Button
+                    id="clone"
+                    title="Clone"
+                    variant="light"
+                    color={user.userColor}
+                  >
+                    <DownIconComponent width={25} />
                   </Button>
                 </Button.Group>
               </div>
@@ -143,10 +240,10 @@ function Chatroom() {
                   id="clear"
                   title="Clear"
                   variant="light"
-                  color="grey"
+                  color={user.userColor}
                   onClick={handleButtonClear}
                 >
-                  <img src="/assets/clear.svg" alt="clear canvas" width={25} />
+                  <ClearIconComponent width={25} />
                 </Button>
               </div>
             </div>
@@ -160,7 +257,6 @@ export default Chatroom;
 
 const LineWidthSlider = (props) => {
   const [lineWidthValue, setLineWidthValue] = useState(5);
-  // const [lineWidthEndValue, setLineWidthEndValue] = useState(5);
 
   const handleSliderChange = (newValue) => {
     setLineWidthValue(newValue);
@@ -172,7 +268,7 @@ const LineWidthSlider = (props) => {
       <Slider
         value={lineWidthValue}
         thumbSize={(lineWidthValue + 30) / 2}
-        color="gray"
+        color={props.color ? props.color : "gray"}
         onChange={setLineWidthValue}
         onChangeEnd={handleSliderChange}
         min={1}
