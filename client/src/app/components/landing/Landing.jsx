@@ -5,7 +5,10 @@ import {
 } from "@mantine/core";
 import { motion } from "framer-motion";
 import { Outlet, useLocation } from "react-router-dom";
-import { PictoLogoLargeComponent } from "../_icons/IconComponents";
+import {
+  PictoLogoLargeComponent,
+  SunMoonIconComponent,
+} from "../_icons/IconComponents";
 import "./Landing.css";
 
 function Landing() {
@@ -68,7 +71,9 @@ function Landing() {
         variant="default"
         size="xl"
         aria-label="Toggle color scheme"
-      ></ActionIcon>
+      >
+        <SunMoonIconComponent />
+      </ActionIcon>
     </>
   );
 }

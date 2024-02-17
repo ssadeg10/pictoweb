@@ -138,7 +138,14 @@ function Chatroom() {
         <AppShellHeader>
           <Group justify="space-between" className="header-group">
             <div className="header-logo">
-              <a href="/" style={{ paddingTop: "5px" }}>
+              <a
+                href="/"
+                style={{
+                  paddingTop: "5px",
+                  color: "inherit",
+                  textDecoration: "none",
+                }}
+              >
                 <PictoLogoComponent className="logo" />
               </a>
             </div>

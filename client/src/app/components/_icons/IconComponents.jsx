@@ -83,6 +83,9 @@ export const PencilIconComponent = (props) => (
 export const PictoLogoComponent = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+    strokeWidth={0.001}
+    fill="currentColor"
     width={10.24}
     height={10.24}
     viewBox="0 0 7.68 7.68"
@@ -98,6 +101,9 @@ export const PictoLogoComponent = (props) => (
 export const PictoLogoLargeComponent = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
+    stroke="currentColor"
+    strokeWidth={0.001}
+    fill="currentColor"
     width={163.84}
     height={163.84}
     viewBox="0 0 7.68 7.68"
@@ -123,5 +129,24 @@ export const UpIconComponent = (props) => (
     {...props}
   >
     <path d="m17 11-5-5-5 5M17 18l-5-5-5 5" />
+  </svg>
+);
+
+export const SunMoonIconComponent = (props) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width={24}
+    height={24}
+    fill="none"
+    stroke="currentColor"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    strokeWidth={1.5}
+    className="icon icon-tabler icon-tabler-sun-moon"
+    {...props}
+  >
+    <path stroke="none" d="M0 0h24v24H0z" />
+    <path d="M9.173 14.83a4 4 0 1 1 5.657-5.657" />
+    <path d="m11.294 12.707.174.247a7.5 7.5 0 0 0 8.845 2.492A9 9 0 0 1 5.642 18.36M3 12h1M12 3v1M5.6 5.6l.7.7M3 21 21 3" />
   </svg>
 );

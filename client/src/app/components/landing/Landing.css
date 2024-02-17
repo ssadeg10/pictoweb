@@ -61,7 +61,7 @@ body {
 }
 
 .link {
-  color: initial;
+  color: inherit;
 }
 
 .disableSelect {

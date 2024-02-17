@@ -3,6 +3,7 @@ import {
   Button,
   Center,
   ColorPicker,
+  ColorSwatch,
   DEFAULT_THEME,
   Group,
   LoadingOverlay,
@@ -13,7 +14,7 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function UserSetup() {
   const [username, setUsername] = useState("");
@@ -79,10 +80,11 @@ function UserSetup() {
               transitionProps={{ transition: "fade", duration: 100 }}
             >
               <Popover.Target>
-                <div
+                {/* <div
                   className="user-color-picker"
                   style={{ backgroundColor: colorValue, cursor: "pointer" }}
-                ></div>
+                ></div> */}
+                <ColorSwatch component="button" color={colorValue} radius={0} />
               </Popover.Target>
             </Tooltip>
             <Popover.Dropdown>
@@ -121,8 +123,8 @@ function UserSetup() {
         </Group>
         <br />
         <Center>
-          <Link to=".." className="link disableSelect" draggable="false">
-            <Text>Back</Text>
+          <Link to=".." className="link" draggable="false">
+            <Text className="link">Back</Text>
           </Link>
         </Center>
       </Box>
