@@ -26,10 +26,10 @@ app.get("/render", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log(`user connected: ${socket.id}`);
+  // console.log(`user connected: ${socket.id}`);
 
   socket.on("sendMessage", (data) => {
-    console.log("\trecieved message");
+    // console.log("\trecieved message");
     socket.emit("receiveMessage", data);
   });
 
@@ -38,9 +38,9 @@ io.on("connection", (socket) => {
   //   socket.join(roomId);
   // });
 
-  socket.on("disconnect", (reason) => {
-    console.log(`user disconnected: ${socket.id}`);
-  });
+  // socket.on("disconnect", (reason) => {
+  //   console.log(`user disconnected: ${socket.id}`);
+  // });
 });
 
 const PORT = process.env.PORT || 4000;

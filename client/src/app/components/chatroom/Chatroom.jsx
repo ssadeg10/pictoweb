@@ -33,6 +33,7 @@ import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import "./Chatroom.css";
 
 function Chatroom() {
+  const [messageData, setMessageData] = useState([]);
   const [isConnected, setIsConnected] = useState(socket.connected);
   const [visible, visibilityHandler] = useDisclosure(true);
   const location = useLocation();
@@ -103,7 +104,7 @@ function Chatroom() {
     }
 
     function onReceiveMessage(data) {
-      console.log(data);
+      setMessageData([...messageData, data]);
     }
 
     async function loadMessagesState() {
@@ -158,7 +159,7 @@ function Chatroom() {
         <AppShellMain>
           <Center>
             <div className="messagesPanel">
-              <MessagesPanel></MessagesPanel>
+              <MessagesPanel messageData={messageData}></MessagesPanel>
             </div>
           </Center>
         </AppShellMain>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
-function MessagesPanel(params) {
+function MessagesPanel({ messageData }) {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -12,10 +12,19 @@ function MessagesPanel(params) {
   return (
     <>
       <div className="messages">
-        <BaseCanvasMessage
+        {messageData.map((data, index) => {
+          return (
+            <BaseCanvasMessage
+              key={index}
+              username={data.user.username}
+              color={data.user.userColor}
+            ></BaseCanvasMessage>
+          );
+        })}
+        {/* <BaseCanvasMessage
           username="test-username"
           color="#1098ad"
-        ></BaseCanvasMessage>
+        ></BaseCanvasMessage> */}
       </div>
     </>
   );
