@@ -1,13 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
 function MessagesPanel({ messageData }) {
   const [isLoading, setLoading] = useState(true);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     // load previous chatroom messages
     setLoading(false);
-  });
+  }, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messageData]);
 
   return (
     <>
@@ -23,6 +28,7 @@ function MessagesPanel({ messageData }) {
             ></BaseCanvasMessage>
           );
         })}
+        <div ref={messagesEndRef} />
       </div>
     </>
   );
