@@ -111,10 +111,6 @@ function Chatroom() {
       // TODO: check for MessagesPanel state to finish loading
     }
 
-    // function sendMessage(userMessage) {
-    //   socket.emit("message", userMessage);
-    // }
-
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);

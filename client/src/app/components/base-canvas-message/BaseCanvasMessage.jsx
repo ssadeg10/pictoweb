@@ -9,8 +9,6 @@ const BaseCanvasMessage = forwardRef(function CanvasShell(props, ref) {
   const colorArray = getColorArrayFromHex(props.color);
   const color = colorArray ? colorArray : DEFAULT_THEME.colors.gray;
 
-  console.log(props.image);
-
   return (
     <div id="containerCanvas">
       <p
@@ -43,11 +41,6 @@ const BaseCanvasMessage = forwardRef(function CanvasShell(props, ref) {
           </canvas>
         </div>
       )}
-      {/* <div id="containerText">
-        <canvas className="canvas" id="textLayer">
-          Your browser does not support HTML5 Canvas
-        </canvas>
-      </div> */}
     </div>
   );
 });

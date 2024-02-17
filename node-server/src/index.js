@@ -30,7 +30,7 @@ io.on("connection", (socket) => {
 
   socket.on("sendMessage", (data) => {
     // console.log("\trecieved message");
-    socket.emit("receiveMessage", data);
+    io.emit("receiveMessage", data); // emit to all clients
   });
 
   // TODO: need client script to specify the connecting room to join

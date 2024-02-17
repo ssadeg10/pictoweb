@@ -23,10 +23,6 @@ function MessagesPanel({ messageData }) {
             ></BaseCanvasMessage>
           );
         })}
-        {/* <BaseCanvasMessage
-          username="test-username"
-          color="#1098ad"
-        ></BaseCanvasMessage> */}
       </div>
     </>
   );
