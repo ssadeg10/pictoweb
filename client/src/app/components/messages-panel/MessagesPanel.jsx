@@ -18,6 +18,8 @@ function MessagesPanel({ messageData }) {
               key={index}
               username={data.user.username}
               color={data.user.userColor}
+              image={data.message.image}
+              text={data.message.text}
             ></BaseCanvasMessage>
           );
         })}
