@@ -17,6 +17,18 @@ body {
 .header-group {
   padding: 0 1rem;
 }
+.alert-entering,
+.alert-leaving {
+  width: 15rem;
+  margin: 1rem;
+  position: relative;
+}
+.alert-entering .mantine-Alert-label {
+  color: yellow;
+}
+.alert-leaving .mantine-Alert-label {
+  color: aqua;
+}
 
 .messagesPanel {
   max-width: max-content;

@@ -1,4 +1,5 @@
 import {
+  Alert,
   AppShell,
   AppShellFooter,
   AppShellHeader,
@@ -13,6 +14,7 @@ import {
   SegmentedControl,
   Slider,
   Text,
+  Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useRef, useState } from "react";
@@ -33,9 +35,14 @@ import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import "./Chatroom.css";
 
 function Chatroom() {
-  const [messageData, setMessageData] = useState([]);
-  const [isConnected, setIsConnected] = useState(socket.connected);
-  const [visible, visibilityHandler] = useDisclosure(true);
+  const [messageData, setMessageData] = useState([]); // chat messages
+  const [isConnected, setIsConnected] = useState(socket.connected); // connection badge
+  const [visible, visibilityHandler] = useDisclosure(true); // spinner visibility
+  const [visibleNowEntering, setVisibleNowEntering] = useState(false);
+  const [visibleNowLeaving, setVisibleNowLeaving] = useState(false);
+  const [nowEnteringUsername, setNowEnteringUsername] = useState("");
+  const [nowLeavingUsername, setNowLeavingUsername] = useState("");
+
   const location = useLocation();
 
   // Create user, assign user to message object model
@@ -64,6 +71,14 @@ function Chatroom() {
     }
   };
 
+  const handleButtonLineWidth = (width) => {
+    if (typeof lineWidthRef.current === "function") {
+      lineWidthRef.current(width);
+    } else {
+      console.error("Line width function is not defined");
+    }
+  };
+
   const handleButtonClear = () => {
     if (typeof clearRef.current === "function") {
       clearRef.current();
@@ -72,12 +87,8 @@ function Chatroom() {
     }
   };
 
-  const handleButtonLineWidth = (width) => {
-    if (typeof lineWidthRef.current === "function") {
-      lineWidthRef.current(width);
-    } else {
-      console.error("Line width function is not defined");
-    }
+  const handleButtonClone = () => {
+    setVisibleNowEntering.toggle();
   };
 
   const handleButtonSend = () => {
@@ -91,16 +102,42 @@ function Chatroom() {
 
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("userNowEntering", (username) => onNowEntering(username));
+    socket.on("userNowLeaving", (username) => onNowLeaving(username));
     socket.on("receiveMessage", (data) => onReceiveMessage(data));
 
     async function onConnect() {
       setIsConnected(true);
       await loadMessagesState();
       visibilityHandler.close();
+
+      setTimeout(() => {
+        socket.emit("nowEntering", user.username);
+      }, 500);
     }
 
     function onDisconnect() {
       setIsConnected(false);
+
+      setTimeout(() => {
+        socket.emit("nowLeaving", user.username);
+      }, 500);
+    }
+
+    function onNowEntering(username) {
+      setNowEnteringUsername(username);
+      setVisibleNowEntering(true);
+      setTimeout(() => {
+        setVisibleNowEntering(false);
+      }, 5000);
+    }
+
+    function onNowLeaving(username) {
+      setNowLeavingUsername(username);
+      setVisibleNowLeaving(true);
+      setTimeout(() => {
+        setVisibleNowLeaving(false);
+      }, 5000);
     }
 
     function onReceiveMessage(data) {
@@ -114,10 +151,12 @@ function Chatroom() {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("nowEntering", (username) => onNowEntering(username));
+      socket.off("nowLeaving", (username) => onNowLeaving(username));
       socket.off("receiveMessage", (data) => onReceiveMessage(data));
       socket.disconnect();
     };
-  });
+  }, []);
 
   return (
     <>
@@ -160,6 +199,41 @@ function Chatroom() {
           </Group>
         </AppShellHeader>
         <AppShellMain>
+          <Transition
+            mounted={visibleNowEntering}
+            transition="slide-right"
+            duration={400}
+            timingFunction="ease"
+          >
+            {(transitionStyle) => (
+              <Alert
+                className="alert-entering"
+                variant="filled"
+                color="black"
+                title="Now Entering"
+                style={transitionStyle}
+              >
+                {nowEnteringUsername ? nowEnteringUsername : "Username"}
+              </Alert>
+            )}
+          </Transition>
+          <Transition
+            mounted={visibleNowLeaving}
+            transition="slide-right"
+            duration={400}
+            timingFunction="ease"
+          >
+            {() => (
+              <Alert
+                className="alert-leaving"
+                variant="filled"
+                color="black"
+                title="Now Leaving"
+              >
+                {nowLeavingUsername ? nowLeavingUsername : "Username"}
+              </Alert>
+            )}
+          </Transition>
           <Center>
             <div className="messagesPanel">
               <MessagesPanel messageData={messageData}></MessagesPanel>
@@ -237,6 +311,7 @@ function Chatroom() {
                     title="Clone"
                     variant="light"
                     color={user.userColor}
+                    onClick={handleButtonClone}
                   >
                     <DownIconComponent width={25} />
                   </Button>

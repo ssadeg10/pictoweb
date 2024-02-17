@@ -28,6 +28,14 @@ app.get("/render", (req, res) => {
 io.on("connection", (socket) => {
   // console.log(`user connected: ${socket.id}`);
 
+  socket.on("nowEntering", (data) => {
+    socket.broadcast.emit("userNowEntering", data);
+  });
+
+  socket.on("nowLeaving", (data) => {
+    socket.broadcast.emit("userNowLeaving", data);
+  });
+
   socket.on("sendMessage", (data) => {
     // console.log("\trecieved message");
     io.emit("receiveMessage", data); // emit to all clients
