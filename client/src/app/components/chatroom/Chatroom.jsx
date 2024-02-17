@@ -73,7 +73,7 @@ function Chatroom() {
       setNowEnteringUsername(username);
       setVisibleNowEntering(true);
       setTimeout(() => {
-        // setVisibleNowEntering(false);
+        setVisibleNowEntering(false);
       }, 5000);
     }
 
@@ -81,7 +81,7 @@ function Chatroom() {
       setNowLeavingUsername(username);
       setVisibleNowLeaving(true);
       setTimeout(() => {
-        // setVisibleNowLeaving(false);
+        setVisibleNowLeaving(false);
       }, 5000);
     }
 

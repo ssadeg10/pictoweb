@@ -29,7 +29,8 @@ body {
   color: aqua;
 }
 .alertDiv {
-  position: absolute;
+  margin-top: 60px;
+  position: fixed;
   z-index: 100;
 }
 
