@@ -21,13 +21,16 @@ body {
 .alert-leaving {
   width: 15rem;
   margin: 1rem;
-  position: relative;
 }
 .alert-entering .mantine-Alert-label {
   color: yellow;
 }
 .alert-leaving .mantine-Alert-label {
   color: aqua;
+}
+.alertDiv {
+  position: absolute;
+  z-index: 100;
 }
 
 .messagesPanel {

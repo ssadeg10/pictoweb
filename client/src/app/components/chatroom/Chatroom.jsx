@@ -199,41 +199,44 @@ function Chatroom() {
           </Group>
         </AppShellHeader>
         <AppShellMain>
-          <Transition
-            mounted={visibleNowEntering}
-            transition="slide-right"
-            duration={400}
-            timingFunction="ease"
-          >
-            {(transitionStyle) => (
-              <Alert
-                className="alert-entering"
-                variant="filled"
-                color="black"
-                title="Now Entering"
-                style={transitionStyle}
-              >
-                {nowEnteringUsername ? nowEnteringUsername : "Username"}
-              </Alert>
-            )}
-          </Transition>
-          <Transition
-            mounted={visibleNowLeaving}
-            transition="slide-right"
-            duration={400}
-            timingFunction="ease"
-          >
-            {() => (
-              <Alert
-                className="alert-leaving"
-                variant="filled"
-                color="black"
-                title="Now Leaving"
-              >
-                {nowLeavingUsername ? nowLeavingUsername : "Username"}
-              </Alert>
-            )}
-          </Transition>
+          <div className="alertDiv">
+            <Transition
+              mounted={visibleNowEntering}
+              transition="slide-right"
+              duration={400}
+              timingFunction="ease"
+            >
+              {(transitionStyle) => (
+                <Alert
+                  className="alert-entering"
+                  variant="filled"
+                  color="black"
+                  title="Now Entering"
+                  style={transitionStyle}
+                >
+                  {nowEnteringUsername ? nowEnteringUsername : "Username"}
+                </Alert>
+              )}
+            </Transition>
+            <Transition
+              mounted={visibleNowLeaving}
+              transition="slide-right"
+              duration={400}
+              timingFunction="ease"
+            >
+              {(transitionStyle) => (
+                <Alert
+                  className="alert-leaving"
+                  variant="filled"
+                  color="black"
+                  title="Now Leaving"
+                  style={transitionStyle}
+                >
+                  {nowLeavingUsername ? nowLeavingUsername : "Username"}
+                </Alert>
+              )}
+            </Transition>
+          </div>
           <Center>
             <div className="messagesPanel">
               <MessagesPanel messageData={messageData}></MessagesPanel>
