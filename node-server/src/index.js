@@ -1,3 +1,4 @@
+// dependencies
 const express = require("express");
 const { createServer } = require("node:http");
 const path = require("path");
@@ -5,6 +6,7 @@ const socketIO = require("socket.io");
 // const Chatroom = require("./views/chatroom/Chatroom");
 const cors = require("cors");
 
+// setup server
 const app = express();
 app.use(cors());
 const server = createServer(app);
@@ -18,6 +20,7 @@ const io = socketIO(server, {
 // serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, "public")));
 
+// endpoints
 app.get("/render", (req, res) => {
   const username = req.query.username;
   const roomId = req.query.roomId;
@@ -25,29 +28,38 @@ app.get("/render", (req, res) => {
   res.send(response);
 });
 
-io.on("connection", (socket) => {
-  // console.log(`user connected: ${socket.id}`);
+const connectedUsersMap = new Map();
 
+io.on("connection", (socket) => {
   socket.on("nowEntering", (data) => {
+    connectedUsersMap.set(`${socket.id}`, `${data}`);
+    // console.log(JSON.stringify([...connectedUsersMap]));
     socket.broadcast.emit("userNowEntering", data);
   });
 
   socket.on("nowLeaving", (data) => {
-    socket.broadcast.emit("userNowLeaving", data);
+    if (connectedUsersMap.delete(socket.id)) {
+      socket.broadcast.emit("userNowLeaving", data);
+    }
   });
 
   socket.on("sendMessage", (data) => {
-    // console.log("\trecieved message");
     io.emit("receiveMessage", data); // emit to all clients
+  });
+
+  socket.on("disconnect", (reason) => {
+    if (reason == "transport close") {
+      const username = connectedUsersMap.get(socket.id);
+      if (username) {
+        connectedUsersMap.delete(socket.id); // returns true if deleted
+        socket.broadcast.emit("userNowLeaving", username);
+      }
+    }
   });
 
   // TODO: need client script to specify the connecting room to join
   // socket.on("join", (roomId) => {
   //   socket.join(roomId);
-  // });
-
-  // socket.on("disconnect", (reason) => {
-  //   console.log(`user disconnected: ${socket.id}`);
   // });
 });
 
