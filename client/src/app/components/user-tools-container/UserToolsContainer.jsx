@@ -16,17 +16,20 @@ import {
   PencilIconComponent,
   UpIconComponent,
 } from "../_icons/IconComponents.jsx";
-import DrawCanvas from "../draw-canvas/DrawCanvas.jsx";
+import { MemoizedDrawCanvas } from "../draw-canvas/DrawCanvas.jsx";
 
-export function UserToolsContainer({ user }) {
+export function UserToolsContainer({ user, lastMessageImg }) {
   const userMessageObj = userMessage;
   userMessageObj.user = user;
+
+  //   useEffect(() => {}, [lastMessageImg]);
 
   // Hooks to store child functions
   const clearRef = useRef(null);
   const drawEraseRef = useRef(null);
   const lineWidthRef = useRef(null);
   const getDataURLRef = useRef(null);
+  const loadDataURLRef = useRef(null);
 
   // onClick handlers
   const handleButtonDrawErase = (eraseEnable) => {
@@ -59,11 +62,17 @@ export function UserToolsContainer({ user }) {
     }
   };
 
-  const handleButtonClone = () => {};
+  const handleButtonClone = () => {
+    if (!lastMessageImg) {
+      return console.error("lastMessageImg is empty");
+    }
+    loadDataURLRef.current(lastMessageImg);
+  };
 
   const handleButtonSend = () => {
     userMessageObj.message.image = getDataURLRef.current(); // base64
     socket.emit("sendMessage", userMessageObj);
+    handleButtonClear();
   };
 
   return (
@@ -105,7 +114,7 @@ export function UserToolsContainer({ user }) {
         </div>
       </div>
       <div>
-        <DrawCanvas
+        <MemoizedDrawCanvas
           username={user.username}
           // set hooks to child functions
           onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)}
@@ -113,8 +122,11 @@ export function UserToolsContainer({ user }) {
           onSetLineWidthRef={(lineWidthFunc) =>
             (lineWidthRef.current = lineWidthFunc)
           }
-          onGetDataURLRef={(dataURLFunc) =>
-            (getDataURLRef.current = dataURLFunc)
+          onGetDataURLRef={(getDataFunc) =>
+            (getDataURLRef.current = getDataFunc)
+          }
+          onLoadURLToCanvasRef={(loadDataFunc) =>
+            (loadDataURLRef.current = loadDataFunc)
           }
         />
       </div>
@@ -159,7 +171,8 @@ export const MemoizedUserTools = React.memo(
   (prevProps, nextProps) => {
     return (
       prevProps.user.username === nextProps.user.username &&
-      prevProps.user.userColor === nextProps.user.userColor
+      prevProps.user.userColor === nextProps.user.userColor &&
+      prevProps.lastMessageImg === nextProps.lastMessageImg //! causes re-rendering
     );
   }
 );

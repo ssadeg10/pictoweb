@@ -12,7 +12,7 @@ import {
   Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { socket } from "../../connections/socket.js";
 import User from "../../models/User.js";
@@ -29,7 +29,7 @@ function Chatroom() {
   const [visibleNowLeaving, setVisibleNowLeaving] = useState(false);
   const [nowEnteringUsername, setNowEnteringUsername] = useState("");
   const [nowLeavingUsername, setNowLeavingUsername] = useState("");
-
+  const [lastMessageImg, setLastMessageImg] = useState("");
   const location = useLocation();
 
   // Create user, assign user to message object model
@@ -87,6 +87,7 @@ function Chatroom() {
 
     function onReceiveMessage(data) {
       setMessageData([...messageData, data]);
+      setLastMessageImg(data.message.image);
     }
 
     async function loadMessagesState() {
@@ -189,7 +190,7 @@ function Chatroom() {
         </AppShellMain>
         <AppShellFooter>
           <div className="canvasPanel">
-            <MemoizedUserTools user={user} />
+            <MemoizedUserTools user={user} lastMessageImg={lastMessageImg} />
           </div>
         </AppShellFooter>
       </AppShell>

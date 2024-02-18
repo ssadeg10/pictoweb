@@ -1,8 +1,8 @@
 import { getHotkeyHandler } from "@mantine/hooks";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import BaseCanvasMessage from "../base-canvas-message/BaseCanvasMessage";
 
-function DrawCanvas(props) {
+export function DrawCanvas(props) {
   const canvasShellRef = useRef(null);
 
   useEffect(() => {
@@ -131,7 +131,7 @@ function DrawCanvas(props) {
       const blobURL = undoStack.at(-1);
       redoStack.push(lastUndoItem);
 
-      loadBlobToCanvas(blobURL);
+      loadURLToCanvas(blobURL);
     }
 
     function redo() {
@@ -145,7 +145,7 @@ function DrawCanvas(props) {
       const lastRedoItem = redoStack.pop();
       undoStack.push(lastRedoItem);
 
-      loadBlobToCanvas(blobURL);
+      loadURLToCanvas(blobURL);
     }
 
     function handleStackOverflow() {
@@ -159,7 +159,8 @@ function DrawCanvas(props) {
       }
     }
 
-    function loadBlobToCanvas(blobURL) {
+    // Works on blobURL and dataURL?
+    function loadURLToCanvas(url) {
       // set to draw and restore state after drawing
       let currentEraseMode = drawVars.erase;
       erase(false);
@@ -171,7 +172,7 @@ function DrawCanvas(props) {
         erase(currentEraseMode);
       };
 
-      img.src = blobURL;
+      img.src = url;
     }
 
     function getDataURLFromCanvas() {
@@ -183,6 +184,7 @@ function DrawCanvas(props) {
     props.onSetDrawEraseRef(erase);
     props.onSetLineWidthRef(lineWidth);
     props.onGetDataURLRef(getDataURLFromCanvas);
+    props.onLoadURLToCanvasRef(loadURLToCanvas);
 
     // Canvas desktop mouse event listeners
     canvas.addEventListener("mousedown", setPosition);
@@ -227,4 +229,18 @@ function DrawCanvas(props) {
 
   return <BaseCanvasMessage username={props.username} ref={canvasShellRef} />;
 }
-export default DrawCanvas;
+
+export const MemoizedDrawCanvas = React.memo(
+  DrawCanvas,
+  (prevProps, nextProps) => {
+    return (
+      prevProps.username === nextProps.username &&
+      prevProps.onSetClearRef.name === nextProps.onSetClearRef.name &&
+      prevProps.onSetDrawEraseRef.name === nextProps.onSetDrawEraseRef.name &&
+      prevProps.onSetLineWidthRef.name === nextProps.onSetLineWidthRef.name &&
+      prevProps.onGetDataURLRef.name === nextProps.onGetDataURLRef.name &&
+      prevProps.onLoadURLToCanvasRef.name ===
+        nextProps.onLoadURLToCanvasRef.name
+    );
+  }
+);
