@@ -1,5 +1,4 @@
 import {
-  Alert,
   AppShell,
   AppShellFooter,
   AppShellHeader,
@@ -9,9 +8,9 @@ import {
   Center,
   Group,
   LoadingOverlay,
-  Transition,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { notifications } from "@mantine/notifications";
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { socket } from "../../connections/socket.js";
@@ -47,21 +46,19 @@ function Chatroom() {
   useEffect(() => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
-    socket.on("userNowEntering", (username) => onNowEntering(username));
-    socket.on("userNowLeaving", (username) => onNowLeaving(username));
-    socket.on("receiveMessage", (data) => onReceiveMessage(data));
-    socket.on("usernameRequest", () => {
-      return user.username;
-    });
+    socket.on("userNowEntering", onNowEntering);
+    socket.on("userNowLeaving", onNowLeaving);
+    socket.on("receiveMessage", onReceiveMessage);
+    socket.on("usernameRequest", returnUsername);
 
-    async function onConnect() {
+    function onConnect() {
       setIsConnected(true);
-      await loadMessagesState();
+      // await loadMessagesState();
       visibilityHandler.close();
 
       setTimeout(() => {
         socket.emit("nowEntering", user.username);
-      }, 500);
+      }, 1000);
     }
 
     function onDisconnect() {
@@ -69,19 +66,31 @@ function Chatroom() {
     }
 
     function onNowEntering(username) {
-      setNowEnteringUsername(username);
-      setVisibleNowEntering(true);
-      setTimeout(() => {
-        setVisibleNowEntering(false);
-      }, 5000);
+      // setNowEnteringUsername(username);
+      // setVisibleNowEntering(true);
+      // setTimeout(() => {
+      //   setVisibleNowEntering(false);
+      // }, 5000);
+      notifications.show({
+        title: "Now Entering",
+        message: username,
+        color: "#ffff00",
+        style: { backgroundColor: "black" },
+        styles: {
+          title: { color: "#ffff00", fontWeight: "bold" },
+          body: { fontWeight: "bold" },
+        },
+        withCloseButton: false,
+      });
     }
 
     function onNowLeaving(username) {
-      setNowLeavingUsername(username);
-      setVisibleNowLeaving(true);
-      setTimeout(() => {
-        setVisibleNowLeaving(false);
-      }, 5000);
+      // setNowLeavingUsername(username);
+      // setVisibleNowLeaving(true);
+      // setTimeout(() => {
+      //   setVisibleNowLeaving(false);
+      // }, 5000);
+      notifications.show({ title: "Now Leaving", message: username });
     }
 
     function onReceiveMessage(data) {
@@ -93,15 +102,17 @@ function Chatroom() {
       // TODO: check for MessagesPanel state to finish loading
     }
 
+    function returnUsername() {
+      return user.username;
+    }
+
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
-      socket.off("nowEntering", (username) => onNowEntering(username));
-      socket.off("nowLeaving", (username) => onNowLeaving(username));
-      socket.off("receiveMessage", (data) => onReceiveMessage(data));
-      socket.off("usernameRequest", () => {
-        return user.username;
-      });
+      socket.off("userNowEntering", onNowEntering);
+      socket.off("userNowLeaving", onNowLeaving);
+      socket.off("receiveMessage", onReceiveMessage);
+      socket.off("usernameRequest", returnUsername);
     };
   }, [messageData, user.username, visibilityHandler]);
 
@@ -120,44 +131,6 @@ function Chatroom() {
           zIndex: 9999,
         }}
       />
-      <div className="alertDiv">
-        <Transition
-          mounted={visibleNowEntering}
-          transition="slide-right"
-          duration={400}
-          timingFunction="ease"
-        >
-          {(transitionStyle) => (
-            <Alert
-              className="alert-entering"
-              variant="filled"
-              color="black"
-              title="Now Entering"
-              style={transitionStyle}
-            >
-              {nowEnteringUsername ? nowEnteringUsername : "Username"}
-            </Alert>
-          )}
-        </Transition>
-        <Transition
-          mounted={visibleNowLeaving}
-          transition="slide-right"
-          duration={400}
-          timingFunction="ease"
-        >
-          {(transitionStyle) => (
-            <Alert
-              className="alert-leaving"
-              variant="filled"
-              color="black"
-              title="Now Leaving"
-              style={transitionStyle}
-            >
-              {nowLeavingUsername ? nowLeavingUsername : "Username"}
-            </Alert>
-          )}
-        </Transition>
-      </div>
       <AppShell header={{ height: 60 }} footer={{ height: 200 }}>
         <AppShellHeader>
           <Group justify="space-between" className="header-group">

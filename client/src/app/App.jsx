@@ -1,16 +1,18 @@
-import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
-import Landing from "./components/landing/Landing";
-import Chatroom from "./components/chatroom/Chatroom";
+import "@mantine/core/styles.css";
+import { Notifications } from "@mantine/notifications";
+import "@mantine/notifications/styles.css";
 import {
   createBrowserRouter,
   redirect,
   RouterProvider,
 } from "react-router-dom";
-import LandingActionSelect from "./components/landing-action-select/LandingActionSelect";
-import UserSetup from "./components/user-setup/UserSetup";
-import JoinRoom from "./components/join-room/JoinRoom";
+import Chatroom from "./components/chatroom/Chatroom";
 import ErrorPage from "./components/error-page/errorPage";
+import JoinRoom from "./components/join-room/JoinRoom";
+import LandingActionSelect from "./components/landing-action-select/LandingActionSelect";
+import Landing from "./components/landing/Landing";
+import UserSetup from "./components/user-setup/UserSetup";
 import { verifyRoomCode } from "./connections/verifyRoomCode";
 
 function App() {
@@ -70,6 +72,10 @@ function App() {
 
   return (
     <MantineProvider>
+      <Notifications
+        position="top-left"
+        styles={{ root: { marginTop: "60px", width: "15rem" } }}
+      />
       <RouterProvider router={router} />
     </MantineProvider>
   );
