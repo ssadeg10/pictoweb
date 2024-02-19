@@ -17,21 +17,11 @@ body {
 .header-group {
   padding: 0 1rem;
 }
-.alert-entering,
-.alert-leaving {
-  width: 15rem;
-  margin: 1rem;
-}
-.alert-entering .mantine-Alert-label {
+.nowEntering .mantine-Notification-title {
   color: yellow;
 }
-.alert-leaving .mantine-Alert-label {
+.nowLeaving .mantine-Notification-title {
   color: aqua;
-}
-.alertDiv {
-  margin-top: 60px;
-  position: fixed;
-  z-index: 100;
 }
 
 .messagesPanel {

@@ -74,7 +74,9 @@ function App() {
     <MantineProvider>
       <Notifications
         position="top-left"
-        styles={{ root: { marginTop: "60px", width: "15rem" } }}
+        styles={{
+          root: { marginTop: "60px", maxWidth: "fit-content" },
+        }}
       />
       <RouterProvider router={router} />
     </MantineProvider>

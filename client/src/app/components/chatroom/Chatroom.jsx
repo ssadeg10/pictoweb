@@ -11,10 +11,11 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { socket } from "../../connections/socket.js";
 import User from "../../models/User.js";
+import { notificationProps } from "../../models/notificationProps.js";
 import { PictoLogoComponent } from "../_icons/IconComponents.jsx";
 import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import { MemoizedUserTools } from "../user-tools-container/UserToolsContainer.jsx";
@@ -24,10 +25,6 @@ function Chatroom() {
   const [messageData, setMessageData] = useState([]); // chat messages
   const [isConnected, setIsConnected] = useState(socket.connected); // connection badge
   const [visible, visibilityHandler] = useDisclosure(true); // spinner visibility
-  const [visibleNowEntering, setVisibleNowEntering] = useState(false);
-  const [visibleNowLeaving, setVisibleNowLeaving] = useState(false);
-  const [nowEnteringUsername, setNowEnteringUsername] = useState("");
-  const [nowLeavingUsername, setNowLeavingUsername] = useState("");
   const [lastMessageImg, setLastMessageImg] = useState("");
   const location = useLocation();
 
@@ -56,9 +53,10 @@ function Chatroom() {
       // await loadMessagesState();
       visibilityHandler.close();
 
+      // delay to prevent spamming
       setTimeout(() => {
         socket.emit("nowEntering", user.username);
-      }, 1000);
+      }, 2000);
     }
 
     function onDisconnect() {
@@ -66,31 +64,11 @@ function Chatroom() {
     }
 
     function onNowEntering(username) {
-      // setNowEnteringUsername(username);
-      // setVisibleNowEntering(true);
-      // setTimeout(() => {
-      //   setVisibleNowEntering(false);
-      // }, 5000);
-      notifications.show({
-        title: "Now Entering",
-        message: username,
-        color: "#ffff00",
-        style: { backgroundColor: "black" },
-        styles: {
-          title: { color: "#ffff00", fontWeight: "bold" },
-          body: { fontWeight: "bold" },
-        },
-        withCloseButton: false,
-      });
+      notifications.show(getNotifProps(username, true));
     }
 
     function onNowLeaving(username) {
-      // setNowLeavingUsername(username);
-      // setVisibleNowLeaving(true);
-      // setTimeout(() => {
-      //   setVisibleNowLeaving(false);
-      // }, 5000);
-      notifications.show({ title: "Now Leaving", message: username });
+      notifications.show(getNotifProps(username, false));
     }
 
     function onReceiveMessage(data) {
@@ -104,6 +82,23 @@ function Chatroom() {
 
     function returnUsername() {
       return user.username;
+    }
+
+    function getNotifProps(username, joining) {
+      let returnProps = { ...notificationProps };
+      returnProps.message = username;
+
+      if (joining) {
+        returnProps.className = "nowEntering";
+        returnProps.title = "Now Entering";
+        returnProps.color = "rgb(255,255,0)";
+      } else {
+        returnProps.className = "nowLeaving";
+        returnProps.title = "Now Leaving";
+        returnProps.color = "rgb(0,255,255)";
+      }
+
+      return returnProps;
     }
 
     return () => {
