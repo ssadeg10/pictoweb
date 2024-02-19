@@ -50,6 +50,9 @@ function Chatroom() {
     socket.on("userNowEntering", (username) => onNowEntering(username));
     socket.on("userNowLeaving", (username) => onNowLeaving(username));
     socket.on("receiveMessage", (data) => onReceiveMessage(data));
+    socket.on("usernameRequest", () => {
+      return user.username;
+    });
 
     async function onConnect() {
       setIsConnected(true);
@@ -63,10 +66,6 @@ function Chatroom() {
 
     function onDisconnect() {
       setIsConnected(false);
-
-      setTimeout(() => {
-        socket.emit("nowLeaving", user.username);
-      }, 500);
     }
 
     function onNowEntering(username) {
@@ -100,6 +99,9 @@ function Chatroom() {
       socket.off("nowEntering", (username) => onNowEntering(username));
       socket.off("nowLeaving", (username) => onNowLeaving(username));
       socket.off("receiveMessage", (data) => onReceiveMessage(data));
+      socket.off("usernameRequest", () => {
+        return user.username;
+      });
     };
   }, [messageData, user.username, visibilityHandler]);
 

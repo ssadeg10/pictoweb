@@ -31,16 +31,15 @@ app.get("/render", (req, res) => {
 const connectedUsersMap = new Map();
 
 io.on("connection", (socket) => {
+  if (socket.recovered && !connectedUsersMap.get(socket.id)) {
+    socket.emit("usernameRequest", (usernameResponse) =>
+      connectedUsersMap.set(`${socket.id}`, `${usernameResponse}`)
+    );
+  }
+
   socket.on("nowEntering", (data) => {
     connectedUsersMap.set(`${socket.id}`, `${data}`);
-    // console.log(JSON.stringify([...connectedUsersMap]));
     socket.broadcast.emit("userNowEntering", data);
-  });
-
-  socket.on("nowLeaving", (data) => {
-    if (connectedUsersMap.delete(socket.id)) {
-      socket.broadcast.emit("userNowLeaving", data);
-    }
   });
 
   socket.on("sendMessage", (data) => {
