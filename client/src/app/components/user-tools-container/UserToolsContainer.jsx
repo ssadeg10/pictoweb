@@ -1,7 +1,11 @@
 import {
+  Affix,
+  Badge,
   Box,
   Button,
   Center,
+  HoverCard,
+  Kbd,
   SegmentedControl,
   Slider,
   Text,
@@ -76,94 +80,130 @@ export function UserToolsContainer({ user, lastMessageImg }) {
   };
 
   return (
-    <div id="containerUserElements">
-      <div id="containerTools">
-        <SegmentedControl
-          className="drawErase"
-          orientation="vertical"
-          color={user.userColor}
-          onChange={(newValue) => {
-            handleButtonDrawErase(newValue);
-          }}
-          data={[
-            {
-              value: "false",
-              label: (
-                <Center>
-                  <PencilIconComponent width={25} />
-                  <Box ml={10}>Draw</Box>
-                </Center>
-              ),
-            },
-            {
-              value: "true",
-              label: (
-                <Center>
-                  <EraserIconComponent width={25} />
-                  <Box ml={10}>Erase</Box>
-                </Center>
-              ),
-            },
-          ]}
-        />
-        <div id="sliderContainer">
-          <LineWidthSlider
-            width={handleButtonLineWidth}
+    <>
+      <div id="containerUserElements">
+        <div id="containerTools">
+          <SegmentedControl
+            className="drawErase"
+            orientation="vertical"
             color={user.userColor}
+            onChange={(newValue) => {
+              handleButtonDrawErase(newValue);
+            }}
+            data={[
+              {
+                value: "false",
+                label: (
+                  <Center>
+                    <PencilIconComponent width={25} />
+                    <Box ml={10}>Draw</Box>
+                  </Center>
+                ),
+              },
+              {
+                value: "true",
+                label: (
+                  <Center>
+                    <EraserIconComponent width={25} />
+                    <Box ml={10}>Erase</Box>
+                  </Center>
+                ),
+              },
+            ]}
+          />
+          <div id="sliderContainer">
+            <LineWidthSlider
+              width={handleButtonLineWidth}
+              color={user.userColor}
+            />
+          </div>
+        </div>
+        <div>
+          <MemoizedDrawCanvas
+            username={user.username}
+            // set hooks to child functions
+            onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)}
+            onSetDrawEraseRef={(eraseFunc) =>
+              (drawEraseRef.current = eraseFunc)
+            }
+            onSetLineWidthRef={(lineWidthFunc) =>
+              (lineWidthRef.current = lineWidthFunc)
+            }
+            onGetDataURLRef={(getDataFunc) =>
+              (getDataURLRef.current = getDataFunc)
+            }
+            onLoadURLToCanvasRef={(loadDataFunc) =>
+              (loadDataURLRef.current = loadDataFunc)
+            }
           />
         </div>
-      </div>
-      <div>
-        <MemoizedDrawCanvas
-          username={user.username}
-          // set hooks to child functions
-          onSetClearRef={(clearFunc) => (clearRef.current = clearFunc)}
-          onSetDrawEraseRef={(eraseFunc) => (drawEraseRef.current = eraseFunc)}
-          onSetLineWidthRef={(lineWidthFunc) =>
-            (lineWidthRef.current = lineWidthFunc)
-          }
-          onGetDataURLRef={(getDataFunc) =>
-            (getDataURLRef.current = getDataFunc)
-          }
-          onLoadURLToCanvasRef={(loadDataFunc) =>
-            (loadDataURLRef.current = loadDataFunc)
-          }
-        />
-      </div>
-      <div id="containerMssgPanel">
-        <Button.Group orientation="vertical">
+        <div id="containerMssgPanel">
+          <Button.Group orientation="vertical">
+            <Button
+              id="send"
+              title="Send"
+              variant="light"
+              color={user.userColor}
+              onClick={handleButtonSend}
+            >
+              <UpIconComponent width={25} />
+            </Button>
+            <Button
+              id="clone"
+              title="Clone"
+              variant="light"
+              color={user.userColor}
+              onClick={handleButtonClone}
+            >
+              <DownIconComponent width={25} />
+            </Button>
+          </Button.Group>
+        </div>
+        <div id="containerClear">
           <Button
-            id="send"
-            title="Send"
+            id="clear"
+            title="Clear"
             variant="light"
             color={user.userColor}
-            onClick={handleButtonSend}
+            onClick={handleButtonClear}
           >
-            <UpIconComponent width={25} />
+            <ClearIconComponent width={25} />
           </Button>
-          <Button
-            id="clone"
-            title="Clone"
-            variant="light"
-            color={user.userColor}
-            onClick={handleButtonClone}
+        </div>
+      </div>
+      <HoverCard>
+        <HoverCard.Target>
+          <Affix position={{ bottom: 20, left: 20 }}>
+            <Badge size="md" circle>
+              ?
+            </Badge>
+          </Affix>
+        </HoverCard.Target>
+        <HoverCard.Dropdown>
+          <ul
+            style={{
+              textAlign: "initial",
+              listStyleType: "none",
+              margin: "0",
+              padding: "0",
+            }}
           >
-            <DownIconComponent width={25} />
-          </Button>
-        </Button.Group>
-      </div>
-      <div id="containerClear">
-        <Button
-          id="clear"
-          title="Clear"
-          variant="light"
-          color={user.userColor}
-          onClick={handleButtonClear}
-        >
-          <ClearIconComponent width={25} />
-        </Button>
-      </div>
-    </div>
+            <li>
+              <span>
+                <b>Undo: </b>
+                <Kbd>Ctrl</Kbd> + <Kbd>Z</Kbd>
+              </span>
+            </li>
+            <li>
+              <span>
+                <b>Redo: </b>
+                <Kbd>Ctrl</Kbd> + <Kbd>Shift</Kbd> + <Kbd>Z</Kbd>
+              </span>
+            </li>
+          </ul>
+        </HoverCard.Dropdown>
+      </HoverCard>
+    </>
   );
 }
 export const MemoizedUserTools = React.memo(
