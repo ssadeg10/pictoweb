@@ -1,32 +1,36 @@
 // dependencies
-const express = require("express");
-const { createServer } = require("node:http");
-const path = require("path");
+var express = require("express");
+const cors = require("cors");
+const app = express();
+
+const http = require("http");
+const httpServer = http.createServer(app);
 const socketIO = require("socket.io");
 // const Chatroom = require("./views/chatroom/Chatroom");
-const cors = require("cors");
 
-// setup server
-const app = express();
-app.use(cors());
-const server = createServer(app);
-const io = socketIO(server, {
+const PORT = process.env.PORT || 4000;
+
+const io = socketIO(httpServer, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    origin: [
+      "https://8451-24-130-190-236.ngrok-free.app",
+      "http://localhost:5173",
+    ],
+    // allowedHeaders: ["ngrok-skip-browser-warning"],
+    // credentials: true,
   },
 });
 
-// serve static files from the 'public' directory
-app.use(express.static(path.join(__dirname, "public")));
+// // serve static files from the 'public' directory
+// app.use(express.static(path.join(__dirname, "public")));
 
-// endpoints
-app.get("/render", (req, res) => {
-  const username = req.query.username;
-  const roomId = req.query.roomId;
-  const response = `<h1>username=${username}, roomId=${roomId}</h1>`;
-  res.send(response);
-});
+// // endpoints
+// app.get("/render", (req, res) => {
+//   const username = req.query.username;
+//   const roomId = req.query.roomId;
+//   const response = `<h1>username=${username}, roomId=${roomId}</h1>`;
+//   res.send(response);
+// });
 
 const connectedUsersMap = new Map();
 
@@ -34,7 +38,7 @@ io.on("connection", (socket) => {
   socket.on("nowEntering", (data) => {
     connectedUsersMap.set(`${socket.id}`, `${data}`);
     socket.broadcast.emit("userNowEntering", data);
-    io.emit("connectedUsers", [...connectedUsersMap.values()]);
+    io.emit("connectedUsers", [...connectedUsersMap.entries()]);
   });
 
   socket.on("sendMessage", (data) => {
@@ -66,7 +70,6 @@ io.on("connection", (socket) => {
   // io.emit("connectedUsers", connectedUsersMap.values()); // emit to all clients
 });
 
-const PORT = process.env.PORT || 4000;
-server.listen(PORT, () => {
+httpServer.listen(PORT, () => {
   console.log(`Node.js Server running on http://localhost:${PORT}`);
 });

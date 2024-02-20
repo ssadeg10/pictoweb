@@ -29,9 +29,7 @@ function Chatroom() {
   const [visible, visibilityHandler] = useDisclosure(true); // spinner visibility
   const [lastMessageImg, setLastMessageImg] = useState("");
   const [usersCount, setUsersCount] = useState(0);
-  const [usersList, setUsersList] = useState(
-    "No users online. Invite a friend!"
-  );
+  const [usersList, setUsersList] = useState([]);
   const location = useLocation();
 
   // Create user, assign user to message object model
@@ -71,7 +69,7 @@ function Chatroom() {
 
     function onConnectedUsers(userList) {
       setUsersCount([...userList].length);
-      setUsersList([...userList].join("\n"));
+      setUsersList([...userList]);
     }
 
     function onNowEntering(username) {
@@ -154,7 +152,13 @@ function Chatroom() {
               ) : (
                 <Badge color="red">Disconnected</Badge>
               )}
-              <Tooltip withArrow multiline label={usersList}>
+              <Tooltip
+                withArrow
+                multiline
+                label={[...usersList].map(([userId, username]) => {
+                  return <p key={userId}>{username}</p>;
+                })}
+              >
                 <Indicator
                   inline
                   disabled={usersCount <= 0}

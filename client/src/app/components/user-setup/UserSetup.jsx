@@ -69,9 +69,9 @@ function UserSetup() {
             onOpen={() => {
               setTooltipVisible(false);
             }}
-            position="left"
+            position="bottom-start"
+            offset={{ mainAxis: 8, crossAxis: -42 }}
             trapFocus
-            withArrow
           >
             <Tooltip
               label="Click me!"
@@ -80,10 +80,6 @@ function UserSetup() {
               transitionProps={{ transition: "fade", duration: 100 }}
             >
               <Popover.Target>
-                {/* <div
-                  className="user-color-picker"
-                  style={{ backgroundColor: colorValue, cursor: "pointer" }}
-                ></div> */}
                 <ColorSwatch component="button" color={colorValue} radius={0} />
               </Popover.Target>
             </Tooltip>
@@ -158,8 +154,8 @@ function ColorSelect({ colorValue, setColorValue }) {
   ];
 
   return (
-    <Box maw={200} mx="auto">
-      <p>Select a user color:</p>
+    <Box w="24rem" mx="auto">
+      <Text>Select a color</Text>
       <ColorPicker
         format="hex"
         value={colorValue}
@@ -170,10 +166,10 @@ function ColorSelect({ colorValue, setColorValue }) {
           setColorValue(color);
         }}
         styles={{
-          swatches: { justifyContent: "space-evenly" },
-          swatch: { width: "1.8em", height: "1.8em" },
+          swatches: { justifyContent: "space-evenly", width: "24rem" },
+          // swatch: { width: "1.8em", height: "1.8em" },
         }}
-        swatchesPerRow={6}
+        swatchesPerRow={12}
       />
     </Box>
   );
