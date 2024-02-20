@@ -31,15 +31,10 @@ app.get("/render", (req, res) => {
 const connectedUsersMap = new Map();
 
 io.on("connection", (socket) => {
-  if (socket.recovered && !connectedUsersMap.get(socket.id)) {
-    socket.emit("usernameRequest", (usernameResponse) =>
-      connectedUsersMap.set(`${socket.id}`, `${usernameResponse}`)
-    );
-  }
-
   socket.on("nowEntering", (data) => {
     connectedUsersMap.set(`${socket.id}`, `${data}`);
     socket.broadcast.emit("userNowEntering", data);
+    io.emit("connectedUsers", [...connectedUsersMap.values()]);
   });
 
   socket.on("sendMessage", (data) => {
@@ -60,6 +55,15 @@ io.on("connection", (socket) => {
   // socket.on("join", (roomId) => {
   //   socket.join(roomId);
   // });
+
+  // if (!connectedUsersMap.get(socket.id)) {
+  //   socket.emit("usernameRequest", (usernameResponse) => {
+  //     console.log("response", usernameResponse);
+  //     connectedUsersMap.set(`${socket.id}`, `${usernameResponse}`);
+  //   });
+  // }
+
+  // io.emit("connectedUsers", connectedUsersMap.values()); // emit to all clients
 });
 
 const PORT = process.env.PORT || 4000;

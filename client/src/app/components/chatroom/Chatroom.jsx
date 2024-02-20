@@ -7,7 +7,9 @@ import {
   Badge,
   Center,
   Group,
+  Indicator,
   LoadingOverlay,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -26,6 +28,10 @@ function Chatroom() {
   const [isConnected, setIsConnected] = useState(socket.connected); // connection badge
   const [visible, visibilityHandler] = useDisclosure(true); // spinner visibility
   const [lastMessageImg, setLastMessageImg] = useState("");
+  const [usersCount, setUsersCount] = useState(0);
+  const [usersList, setUsersList] = useState(
+    "No users online. Invite a friend!"
+  );
   const location = useLocation();
 
   // Create user, assign user to message object model
@@ -43,10 +49,10 @@ function Chatroom() {
   useEffect(() => {
     socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
+    socket.on("connectedUsers", onConnectedUsers);
     socket.on("userNowEntering", onNowEntering);
     socket.on("userNowLeaving", onNowLeaving);
     socket.on("receiveMessage", onReceiveMessage);
-    socket.on("usernameRequest", returnUsername);
 
     function onConnect() {
       setIsConnected(true);
@@ -61,6 +67,11 @@ function Chatroom() {
 
     function onDisconnect() {
       setIsConnected(false);
+    }
+
+    function onConnectedUsers(userList) {
+      setUsersCount([...userList].length);
+      setUsersList([...userList].join("\n"));
     }
 
     function onNowEntering(username) {
@@ -78,10 +89,6 @@ function Chatroom() {
 
     async function loadMessagesState() {
       // TODO: check for MessagesPanel state to finish loading
-    }
-
-    function returnUsername() {
-      return user.username;
     }
 
     function getNotifProps(username, joining) {
@@ -104,10 +111,10 @@ function Chatroom() {
     return () => {
       socket.off("connect", onConnect);
       socket.off("disconnect", onDisconnect);
+      socket.off("connectedUsers", onConnectedUsers);
       socket.off("userNowEntering", onNowEntering);
       socket.off("userNowLeaving", onNowLeaving);
       socket.off("receiveMessage", onReceiveMessage);
-      socket.off("usernameRequest", returnUsername);
     };
   }, [messageData, user.username, visibilityHandler]);
 
@@ -147,7 +154,16 @@ function Chatroom() {
               ) : (
                 <Badge color="red">Disconnected</Badge>
               )}
-              <Avatar src={null} alt="connected users" size="md"></Avatar>
+              <Tooltip withArrow multiline label={usersList}>
+                <Indicator
+                  inline
+                  disabled={usersCount <= 0}
+                  label={usersCount}
+                  size={16}
+                >
+                  <Avatar src={null} size="md"></Avatar>
+                </Indicator>
+              </Tooltip>
             </Group>
           </Group>
         </AppShellHeader>
