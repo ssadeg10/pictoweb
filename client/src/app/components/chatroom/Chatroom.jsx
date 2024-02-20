@@ -155,9 +155,16 @@ function Chatroom() {
               <Tooltip
                 withArrow
                 multiline
-                label={[...usersList].map(([userId, username]) => {
-                  return <p key={userId}>{username}</p>;
-                })}
+                opened={true}
+                label={
+                  <ul
+                    style={{ listStyleType: "none", margin: "0", padding: "0" }}
+                  >
+                    {[...usersList].map(([userId, username]) => {
+                      return <li key={userId}>{username}</li>;
+                    })}
+                  </ul>
+                }
               >
                 <Indicator
                   inline
