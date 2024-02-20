@@ -1,4 +1,5 @@
 import {
+  ActionIcon,
   AppShell,
   AppShellFooter,
   AppShellHeader,
@@ -10,6 +11,8 @@ import {
   Indicator,
   LoadingOverlay,
   Tooltip,
+  useComputedColorScheme,
+  useMantineColorScheme,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
@@ -18,12 +21,20 @@ import { useLocation } from "react-router-dom";
 import { socket } from "../../connections/socket.js";
 import User from "../../models/User.js";
 import { notificationProps } from "../../models/notificationProps.js";
-import { PictoLogoComponent } from "../_icons/IconComponents.jsx";
+import {
+  PictoLogoComponent,
+  SunMoonIconComponent,
+} from "../_icons/IconComponents.jsx";
 import MessagesPanel from "../messages-panel/MessagesPanel.jsx";
 import { MemoizedUserTools } from "../user-tools-container/UserToolsContainer.jsx";
 import "./Chatroom.css";
 
 function Chatroom() {
+  const { setColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme("light", {
+    getInitialValueInEffect: true,
+  });
+
   const [messageData, setMessageData] = useState([]); // chat messages
   const [isConnected, setIsConnected] = useState(socket.connected); // connection badge
   const [visible, visibilityHandler] = useDisclosure(true); // spinner visibility
@@ -155,7 +166,6 @@ function Chatroom() {
               <Tooltip
                 withArrow
                 multiline
-                opened={true}
                 label={
                   <ul
                     style={{ listStyleType: "none", margin: "0", padding: "0" }}
@@ -191,6 +201,17 @@ function Chatroom() {
           </div>
         </AppShellFooter>
       </AppShell>
+      <ActionIcon
+        onClick={() =>
+          setColorScheme(computedColorScheme === "light" ? "dark" : "light")
+        }
+        variant="default"
+        size="xl"
+        aria-label="Toggle color scheme"
+        style={{ zIndex: "100" }}
+      >
+        <SunMoonIconComponent />
+      </ActionIcon>
     </>
   );
 }

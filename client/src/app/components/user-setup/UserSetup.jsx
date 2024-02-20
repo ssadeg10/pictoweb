@@ -70,7 +70,7 @@ function UserSetup() {
               setTooltipVisible(false);
             }}
             position="bottom-start"
-            offset={{ mainAxis: 8, crossAxis: -42 }}
+            offset={{ mainAxis: 8, crossAxis: -43 }}
             trapFocus
           >
             <Tooltip
@@ -155,7 +155,7 @@ function ColorSelect({ colorValue, setColorValue }) {
 
   return (
     <Box w="24rem" mx="auto">
-      <Text>Select a color</Text>
+      <Text>Select a user color</Text>
       <ColorPicker
         format="hex"
         value={colorValue}
