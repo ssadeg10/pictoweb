@@ -13,11 +13,11 @@ const PORT = process.env.PORT || 4000;
 const io = socketIO(httpServer, {
   cors: {
     origin: [
-      "https://8451-24-130-190-236.ngrok-free.app",
+      "https://536b-24-130-190-236.ngrok-free.app",
       "http://localhost:5173",
     ],
-    // allowedHeaders: ["ngrok-skip-browser-warning"],
-    // credentials: true,
+    allowedHeaders: ["ngrok-skip-browser-warning"],
+    credentials: true,
   },
 });
 
@@ -52,6 +52,7 @@ io.on("connection", (socket) => {
         connectedUsersMap.delete(socket.id); // returns true if deleted
         socket.broadcast.emit("userNowLeaving", username);
       }
+      io.emit("connectedUsers", [...connectedUsersMap.entries()]);
     }
   });
 

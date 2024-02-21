@@ -76,6 +76,7 @@ function App() {
         position="top-left"
         styles={{
           root: { marginTop: "60px", maxWidth: "fit-content" },
+          notification: { margin: "0 10px 10px 10px" },
         }}
       />
       <RouterProvider router={router} />
